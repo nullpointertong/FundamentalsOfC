@@ -22,7 +22,7 @@ int main() {
     linkedListp = (node_t*) malloc(sizeof (node_t));
     free(linkedListp);
     linkedListp = NULL;
-	printf("RICHARD GEY\N");
+	printf("Seb's Mother GEY\N");
     return 0;
 }
 
