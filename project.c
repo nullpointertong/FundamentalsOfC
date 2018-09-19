@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@ int main() {
     linkedListp = (node_t*) malloc(sizeof (node_t));
     free(linkedListp);
     linkedListp = NULL;
+	printf("RICHARD GEY\N");
     return 0;
 }
 
