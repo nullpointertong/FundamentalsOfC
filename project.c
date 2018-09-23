@@ -17,7 +17,7 @@ struct node {
 typedef struct node node_t;
 
 /*Function Prototypes*/
-void insert_hashmap(int *sampleData,map_t hashmap[]);
+void insert_hashmap(int *sampleData,map_t hashmap[],int * new_key);
 
 int main() {
 	/* Assuming 10 is the maximum amount this hashmap can store
@@ -28,8 +28,9 @@ int main() {
 	for(i = 0 ;i<10 ; i++){
     hashmap[i].value = 0;
     hashmap[i].key = 0;
-    }    
-    insert_hashmap(&sampleData, hashmap);
+    }
+    int new_key = sampleData % 10;    
+    insert_hashmap(&sampleData, hashmap, &new_key);
 /*
     node_t* linkedListp;
     node_t* index_pointer;
@@ -42,15 +43,19 @@ int main() {
 }
 
 
-void insert_hashmap(int *sampleData,map_t hashmap[])
+void insert_hashmap(int *sampleData,map_t hashmap[], int *new_key)
 {
 	/*Please Note Hashmap is implmented in the form h(K) = KmodN where 
 	N is number of elements in array and K is key*/
-	if(hashmap[*sampleData % 10].key == 0 && hashmap[*sampleData % 10].value == 0){
-	hashmap[*sampleData % 10].value = *sampleData; 
-    hashmap[*sampleData % 10].key = *sampleData % 10;
+	if(hashmap[*new_key].key == 0 && hashmap[*new_key].value == 0){
+	hashmap[*new_key].value = *sampleData; 
+    hashmap[*new_key].key = *new_key;
     }
-    /*else   insert collision handling mech here */
-
+    else if(hashmap[*new_key].key != 0 && hashmap[*new_key].value != 0){
+    	(*new_key)++;  
+    	return insert_hashmap(sampleData,hashmap,new_key);
+    }
+    
 }
+
 
