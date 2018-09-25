@@ -69,7 +69,7 @@ void display_hashmap(int *employeeId,map_t hashmap[],int * new_key)
 	int i;
 	printf("Value Key\n");
 	for(i = 0 ; i<10 ; i++){
-		printf("%d %d\n",hashmap[i].key, hashmap[i].value);
+		printf("%d %d\n",hashmap[i].value, hashmap[i].key);
 	}
 }
 
