@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-struct account {
-	int accountNum;
-	int accountValue;
-=======
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +5,6 @@ struct account {
 struct account {
     char accountNum[10];
     double accountValue;
->>>>>>> 1317b5dff9956b38e7895dc91d21e9e519a06a99
 };
 typedef struct account account_t;
 
@@ -25,11 +19,6 @@ typedef struct user user_t;
 
 struct node {
     struct node* nextp;
-<<<<<<< HEAD
-    user_t user;    
-};
-typedef struct node node_t;
-=======
     user_t user;
 };
 typedef struct node *node_t; /* PS: made the first value a pointer*/
@@ -194,5 +183,4 @@ void accountMenu()
                         default : printf("Please enter an option 1-6 or quit with 0\n");
                 }
 }
->>>>>>> 1317b5dff9956b38e7895dc91d21e9e519a06a99
 
