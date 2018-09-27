@@ -43,6 +43,8 @@ int main(void)
 {
     return 0;
 }
+
+
 node_t newUser(node_t linkList, int *numUsers)
 {
     ++*numUsers;
@@ -132,3 +134,47 @@ int writeFile(node_t linkList, int numUsers)
     
     return 1; /*writing to file was successful*/
 }
+
+void accountMenu()
+{
+        char input;
+
+/* printf("*********************************************************\n"
+        "                              $$\n"
+        "                          $$$$$$$$$\n"
+        "                       $$$$$$$$$$$$$$\n"
+        "                      $$$$$$$$$$$$$$$$$\n"
+        "                      $$$$$   $$    $$$$$\n"
+        "                      $$$$    $$     $$$$$$\n"
+        "                      $$$$    $$      $$$$$$\n"
+        "                        $$$$\n"
+        "                          $$$$$\n"
+        "                               $$$$\n"
+        "                              $$ $$$$$$$\n"
+        "                              $$     $$$$$$\n"
+        "                              $$     $$$$$\n"
+        "                              $$      $$$$\n"
+        "                              $$     $$$$\n"
+        "                              $$   $$$$$\n"
+        "                       $$$$$$$$$$$$$$$$$$\n"
+        "                        $$$$$$$$$$$$$$\n"
+        "                              $$\n");
+*/
+                printf("1. Add Account\n"
+                       "2. Delete Account\n"
+                       "3. Transfer Between Accounts\n"
+                       "4. Pay Others\n"
+                       "5. Withdraw Money\n"
+                       "6. Deposit Money\n"
+                       "0. exit\n");
+                        
+                printf("Option: ");
+                scanf("%c", &input);
+                switch(input)
+                {
+                        case('1') : printf("hello");
+                        case('0') : exit(0);
+                        default : printf("Please enter an option 1-6 or quit with 0\n");
+                }
+}
+
