@@ -35,8 +35,9 @@ void accountMenu(node_t linkList);
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
 void PayUser(node_t linkList, int amount);
 void TransferMoney(char accountNum1[],char accountNum2[],int amount);
-void WhitdrawMoney(char accountNum[],int amount);
+void WithdrawMoney(char accountNum[],int amount);
 void DepositMoney(char accountNum[],int amount);
+void deleteAccount(char accountNum[]);
 /***************************************************/
 
 int main(void)
@@ -68,7 +69,7 @@ node_t newUser(node_t linkList, int *numUsers)
     
    
     
-    sprintf(p->nextp->user.userID,"05%d", *numUsers);
+    sprintf(p->nextp->user.userID,"05%d", *numUsers);eleteAccount(char
                             /*will set the User ID to the number of users in
                              * the system (including itself) with the leasing
                              * digits being zeros*/
@@ -172,7 +173,12 @@ void accountMenu()
                 scanf("%c", &input);
                 switch(input)
                 {
-                        case('1') : printf("hello");
+                        case('1') : addNewAccount(linklist, userID);
+                        case('2') : deleteAccount(accountNum[]);
+                        case('3') : TransferMoney(char accountNum1[],char accountNum2[],int amount);
+                        case('4') : PayUser(node_t linkList, int amount);
+                        case('5') : WithdrawMoney(char accountNum[],int amount);
+                        case('6') : DepositMoney(char accountNum[],int amount);
                         case('0') : exit(0);
                         default : printf("Please enter an option 1-6 or quit with 0\n");
                 }
