@@ -5,16 +5,31 @@
 
 /*Structures*/
 /*Node Structure in Order to implment a linkedlist*/
+struct account {
+	int accountNum;
+	int accountValue;
+};
+typedef struct account account_t;
+
 struct map {
 	int key;
 	int value;
 };
 typedef struct map map_t;
 
+struct user {
+    char username[15];
+    char password[15];
+    account_t account[5];
+};
+typedef struct user user_t;
+
 struct node {
     struct node* nextp;
+    user_t user;
 };
 typedef struct node node_t;
+
 
 /*Function Prototypes*/
 void insert_hashmap(int *employeeId,map_t hashmap[],int * new_key);

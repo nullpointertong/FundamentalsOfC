@@ -1,11 +1,8 @@
-typedef struct map map_t;
-
-struct node {
-    struct node* nextp;
-    user_t user;
-    
+struct account {
+	int accountNum;
+	int accountValue;
 };
-typedef struct node node_t;
+typedef struct account account_t;
 
 struct user {
     char username[15];
@@ -14,9 +11,9 @@ struct user {
 };
 typedef struct user user_t;
 
-
-struct account {
-	int accountNum;
-	int accountValue;
+struct node {
+    struct node* nextp;
+    user_t user;    
 };
-typedef struct account account_t;
+typedef struct node node_t;
+
