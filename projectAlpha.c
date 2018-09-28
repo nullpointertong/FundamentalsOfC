@@ -35,8 +35,8 @@ void accountMenu(node_t linkList, char userID[]);
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
 void PayUser(node_t linkList, char userID[]);
 void TransferMoney(node_t linkList, char userid[]);
-void withdrawMoney(char accountID[],int amount);
-void depositMoney(char accountID[],int amount);
+void withdrawMoney(node_t linkList, char userid[]);
+void depositMoney(node_t linkList, char userid[]);
 void deleteAccount(char accountID[]);
 void login(node_t linkList);
 /***************************************************/
