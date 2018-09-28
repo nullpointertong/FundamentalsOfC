@@ -172,6 +172,7 @@ void accountMenu(node_t linkList)
                 scanf("%c", &input);
                 switch(input)
                 {
+                    /*waiting till each function is finished to connect them.*/
                         case('1') : printf("AddNewAccount"); /*addNewAccount(linkList, userID);*/
                         case('2') : printf("DeleteAccount");/*deleteAccount(accountID[]);*/
                         case('3') : printf("TransferMoney");/*TransferMoney(char accountID1[],char accountID2[],int amount);*/
@@ -238,7 +239,7 @@ void PayUser(node_t linkList, myuserid)
   char id[15];
   double amount;
   char accountID1[10];
-   char accountID2[10];
+  char accountID2[10];
 
   printf("What is the userid of the user you want to pay ?\n" );
   scanf("%s", &id);
