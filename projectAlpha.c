@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 struct account {
-    char accountNum[10];
+    char accountID[10];
     double accountValue;
 };
 typedef struct account account_t;
@@ -34,10 +34,10 @@ void accountMenu(node_t linkList);
 
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
 void PayUser(node_t linkList, int amount);
-void TransferMoney(char accountNum1[],char accountNum2[],int amount);
-void WithdrawMoney(char accountNum[],int amount);
-void DepositMoney(char accountNum[],int amount);
-void deleteAccount(char accountNum[]);
+void TransferMoney(char accountID1[],char accountID2[],int amount);
+void WithdrawMoney(char accountID[],int amount);
+void DepositMoney(char accountID[],int amount);
+void deleteAccount(char accountID[]);
 /***************************************************/
 
 int main(void)
@@ -122,7 +122,7 @@ int writeFile(node_t linkList, int numUsers)
           
         for(count=0; count<p->user.numAccounts; ++count)
         {
-            fprintf(fp, "%s %lf ", p->user.account[count].accountNum,
+            fprintf(fp, "%s %lf ", p->user.account[count].accountID,
                                    p->user.account[count].accountValue);
             /*prints account num and value for each account he user has*/
         }
@@ -139,7 +139,6 @@ int writeFile(node_t linkList, int numUsers)
 void accountMenu()
 {
         char input;
-
 /* printf("*********************************************************\n"
         "                              $$\n"
         "                          $$$$$$$$$\n"
@@ -174,22 +173,70 @@ void accountMenu()
                 switch(input)
                 {
                         case('1') : addNewAccount(linklist, userID);
-                        case('2') : deleteAccount(accountNum[]);
-                        case('3') : TransferMoney(char accountNum1[],char accountNum2[],int amount);
+                        case('2') : deleteAccount(accountID[]);
+                        case('3') : TransferMoney(char accountID1[],char accountID2[],int amount);
                         case('4') : PayUser(node_t linkList, int amount);
-                        case('5') : WithdrawMoney(char accountNum[],int amount);
-                        case('6') : DepositMoney(char accountNum[],int amount);
+                        case('5') : WithdrawMoney(char accountID[],int amount);
+                        case('6') : DepositMoney(char accountID[],int amount);
                         case('0') : exit(0);
                         default : printf("Please enter an option 1-6 or quit with 0\n");
                 }
+}
+
+void addNewAccount(node_t linkList, char* userID)
+{
+    char* currentID = userID;
+    printf("Your user ID is %s", currentID);
+
+    char action;
+    printf("Do you wannt to add a new account, please enter 'y' or 'n' for next processing\n");
+    scanf("%c", &action);
+    while(action != 'y' || action != 'n' || action != 'Y' || action != 'N')
+    {
+        pritnf("Invalid Input, Please try again\n");
+        scanf("%c", &action);
+    }
+
+
+    if(action == 'y' || action == 'Y')
+    {
+        node_t p;
+        p=(node_t)malloc(sizeof(node_t));
+
+        for(p=linklist; p!=NULL; p-> nextp)
+        {
+            if(p->user.userID = currentID)
+            {
+                if(p->user.numAccounts >= 5)
+                {
+                pritnf("Sorry, the quota for accounts of user is full\n")
+                break;
+                }
+                else
+                {
+                int currentNum = p->user.numAccounts;
+                char* newAccountID = userID + currentNum;
+                p->user.account[currentNum+1].accountID = newAccountID;
+                p->user.account[currentNum+1].accountValue = 0;
+                printf("Your new account has been added successfully\n");
+                printf("Account ID is &c and value is &lf", 
+                    p->user.account[account+1].accountID, 
+                    p->user.acocunt[currentNum+1].accountValue);
+            }
+        }
+    }
+    else if(action =='n' || action =='N')
+    {
+    /* call accountMenu(linklist) */
+    }
 }
 
 void PayUser(node_t linkList, myuserid)
 {
   char id[15];
   double amount;
-  char accountNum1[10];
-   char accountNum2[10];
+  char accountID1[10];
+   char accountID2[10];
 
   printf("What is the userid of the user you want to pay ?\n" );
   scanf("%s", &id);
@@ -198,10 +245,10 @@ void PayUser(node_t linkList, myuserid)
   scanf("%lf", &amount);
 
   printf("What is the account number you want to pay ?\n");
-  scanf("%s", &accountNum2);
+  scanf("%s", &accountID2);
 
   printf("With wich account do you want to pay?\n");
-  scanf("%s", &accountNum1);
+  scanf("%s", &accountID1);
   
     node_t i;
         for(i = user; i != NULL; i = i->nextp)
@@ -211,10 +258,10 @@ void PayUser(node_t linkList, myuserid)
                  int j;
                  for(j = 0; j < 6; j++)
                  {
-                        if(strcmp(account[j].accountNum2, accountname) == 0)
+                        if(strcmp(account[j].accountID2, accountname) == 0)
                         {
-                            account[j].accountNum2 += amount;
-                            myuserid.accountNum1 -= amount;
+                            account[j].accountID2 += amount;
+                            myuserid.accountID1 -= amount;
                             printf("Mr/Miss %s has been paid \n",id );
                         }
                         else
