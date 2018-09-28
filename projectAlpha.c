@@ -69,7 +69,7 @@ node_t newUser(node_t linkList, int *numUsers)
     
    
     
-    sprintf(p->nextp->user.userID,"05%d", *numUsers);eleteAccount(char
+    sprintf(p->nextp->user.userID,"05%d", *numUsers);
                             /*will set the User ID to the number of users in
                              * the system (including itself) with the leasing
                              * digits being zeros*/
@@ -136,7 +136,7 @@ int writeFile(node_t linkList, int numUsers)
     return 1; /*writing to file was successful*/
 }
 
-void accountMenu()
+void accountMenu(node_t linkList)
 {
         char input;
 /* printf("*********************************************************\n"
@@ -172,12 +172,12 @@ void accountMenu()
                 scanf("%c", &input);
                 switch(input)
                 {
-                        case('1') : addNewAccount(linklist, userID);
-                        case('2') : deleteAccount(accountID[]);
-                        case('3') : TransferMoney(char accountID1[],char accountID2[],int amount);
-                        case('4') : PayUser(node_t linkList, int amount);
-                        case('5') : WithdrawMoney(char accountID[],int amount);
-                        case('6') : DepositMoney(char accountID[],int amount);
+                        case('1') : printf("AddNewAccount"); /*addNewAccount(linkList, userID);*/
+                        case('2') : printf("DeleteAccount");/*deleteAccount(accountID[]);*/
+                        case('3') : printf("TransferMoney");/*TransferMoney(char accountID1[],char accountID2[],int amount);*/
+                        case('4') : printf("Payuser");/*PayUser(node_t linkList, int amount);*/
+                        case('5') : printf("Withdraw money");/*WithdrawMoney(char accountID[],int amount);*/
+                        case('6') : printf("DepositMoney");/*DepositMoney(char accountID[],int amount);*/
                         case('0') : exit(0);
                         default : printf("Please enter an option 1-6 or quit with 0\n");
                 }
@@ -193,7 +193,7 @@ void addNewAccount(node_t linkList, char* userID)
     scanf("%c", &action);
     while(action != 'y' || action != 'n' || action != 'Y' || action != 'N')
     {
-        pritnf("Invalid Input, Please try again\n");
+        printf("Invalid Input, Please try again\n");
         scanf("%c", &action);
     }
 
@@ -203,13 +203,13 @@ void addNewAccount(node_t linkList, char* userID)
         node_t p;
         p=(node_t)malloc(sizeof(node_t));
 
-        for(p=linklist; p!=NULL; p-> nextp)
+        for(p=linkList; p!=NULL; p=p-> nextp)
         {
             if(p->user.userID = currentID)
             {
                 if(p->user.numAccounts >= 5)
                 {
-                pritnf("Sorry, the quota for accounts of user is full\n")
+                printf("Sorry, the quota for accounts of user is full\n");
                 break;
                 }
                 else
@@ -221,14 +221,16 @@ void addNewAccount(node_t linkList, char* userID)
                 printf("Your new account has been added successfully\n");
                 printf("Account ID is &c and value is &lf", 
                     p->user.account[account+1].accountID, 
-                    p->user.acocunt[currentNum+1].accountValue);
+                    p->user.account[currentNum+1].accountValue);
             }
         }
-    }
+    
     else if(action =='n' || action =='N')
     {
     /* call accountMenu(linklist) */
     }
+}
+}
 }
 
 void PayUser(node_t linkList, myuserid)
