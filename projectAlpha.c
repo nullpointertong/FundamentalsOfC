@@ -34,7 +34,7 @@ void accountMenu(node_t linkList, char userID[]);
 
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
 void PayUser(node_t linkList, char userID[]);
-void TransferMoney(char accountID1[],char accountID2[],int amount);
+void TransferMoney(node_t linkList, char userid[]);
 void WithdrawMoney(char accountID[],int amount);
 void DepositMoney(char accountID[],int amount);
 void deleteAccount(char accountID[]);
@@ -218,7 +218,7 @@ void accountMenu(node_t linkList, char userID[])
                     /*waiting till each function is finished to connect them.*/
                         case('1') : addNewAccount(linkList, userID);
                         case('2') : printf("DeleteAccount");/*deleteAccount(accountID[]);*/
-                        case('3') : printf("TransferMoney");/*TransferMoney(char accountID1[],char accountID2[],int amount);*/
+                        case('3') : TransferMoney(linkList, userID);
                         case('4') : printf("Payuser");/*PayUser(node_t linkList, int amount);*/
                         case('5') : printf("Withdraw money");/*WithdrawMoney(char accountID[],int amount);*/
                         case('6') : printf("DepositMoney");/*DepositMoney(char accountID[],int amount);*/
@@ -276,6 +276,65 @@ void addNewAccount(node_t linkList, char* userID)
 }
 }
 }
+
+void TransferMoney(node_t linkList, char userid[])
+{
+    /*Transfer money from one account into another account*/
+    char accountID1[10];
+    char accountID2[10];
+    double amount;
+    
+    node_t i;
+    i = (node_t)malloc(sizeof(node_t));
+        for(i = linkList; i != NULL; i = i->nextp)
+        {
+            if(strcmp(i->user.userID, userid) == 0)
+            {
+                printf("What account would you like to transfer from?");
+                scanf("%s", accountID1);
+                
+                printf("Destination account: ");
+                scanf("%s", accountID2);
+                
+                printf("Amount: ");
+                scanf("%lf", &amount);
+                
+                
+                 int j;
+                 for(j = 0; j < 6; j++)
+                 {
+                     if(strcmp(i->user.account[j].accountID, accountID1))
+                     {
+                         i->user.account[j].accountValue = i->user.account[j].accountValue - amount;
+                         int k;
+                         for(k = 0; k < 6; k++)
+                         {
+                             if(strcmp(i->user.account[j].accountID, accountID1))
+                            {
+                                i->user.account[k].accountValue = i->user.account[k].accountValue + amount;
+                                printf("Money successfully Transferred\n");
+                                accountMenu(linkList, userid);
+                            }else
+                            {
+                                printf("Transfer unsuccessful, please check you have the right account\n");
+                                i->user.account[j].accountValue = i->user.account[j].accountValue - amount;
+                                TransferMoney(linkList, userid);
+                            }
+                                
+                        }
+                             
+                     }else
+                        {
+                            printf("Sorry the account your trying to"
+                                  " transfer from doesn't exist\n");
+                        
+                            TransferMoney(linkList, userid);
+                        }
+                 }
+             }
+         }
+         free(i);
+     }
 
 void PayUser(node_t linkList, char userid[])
 {
