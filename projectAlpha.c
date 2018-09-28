@@ -190,7 +190,8 @@ void addNewAccount(node_t linkList, char* userID)
     printf("Your user ID is %s", currentID);
 
     char action;
-    printf("Do you wannt to add a new account, please enter 'y' or 'n' for next processing\n");
+    printf("Do you wannt to add a new account, 
+            please enter 'y' or 'n' for next processing\n");
     scanf("%c", &action);
     while(action != 'y' || action != 'n' || action != 'Y' || action != 'N')
     {
@@ -228,10 +229,8 @@ void addNewAccount(node_t linkList, char* userID)
     
     else if(action =='n' || action =='N')
     {
-    /* call accountMenu(linklist) */
+        accountMenu(linklist);
     }
-}
-}
 }
 
 void PayUser(node_t linkList, myuserid)
@@ -278,5 +277,5 @@ void PayUser(node_t linkList, myuserid)
             }
         }
     }
-
+   }
 }
