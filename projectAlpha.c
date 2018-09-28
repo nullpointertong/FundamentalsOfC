@@ -35,8 +35,8 @@ void accountMenu(node_t linkList, char userID[]);
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
 void PayUser(node_t linkList, char userID[]);
 void TransferMoney(node_t linkList, char userid[]);
-void WithdrawMoney(char accountID[],int amount);
-void DepositMoney(char accountID[],int amount);
+void withdrawMoney(char accountID[],int amount);
+void depositMoney(char accountID[],int amount);
 void deleteAccount(char accountID[]);
 void login(node_t linkList);
 /***************************************************/
@@ -335,6 +335,96 @@ void TransferMoney(node_t linkList, char userid[])
          }
          free(i);
      }
+
+void withdrawMoney(node_t linkList, char userid[])
+{
+    
+    char accountID1[10];
+    double amount;
+    
+    node_t i;
+    i = (node_t)malloc(sizeof(node_t));
+        for(i = linkList; i != NULL; i = i->nextp)
+        {
+            if(strcmp(i->user.userID, userid) == 0)
+            {
+                printf("What account would you like to withdraw from?");
+                scanf("%s", accountID1);
+                
+                printf("Amount: ");
+                scanf("%lf", &amount);
+                
+                
+                 int j;
+                 for(j = 0; j < 6; j++)
+                 {
+                     if(strcmp(i->user.account[j].accountID, accountID1))
+                     {
+                         if(i->user.account[j].accountValue < amount)
+                         {
+                         printf("Insufficient Funds");
+                         withdrawMoney(linkList, userid);
+                        }  
+                         i->user.account[j].accountValue = i->user.account[j].accountValue - amount;
+                         printf("withdraw successfull");
+                         
+                                
+                    }else
+                        {
+                            printf("Sorry the account your trying to"
+                                  " withdraw from doesn't exist\n");
+                        
+                            withdrawMoney(linkList, userid);
+                        }
+                             
+                     }
+                 }
+             }
+             free(i);
+         }
+         
+void depositMoney(node_t linkList, char userid[])
+{
+    
+    char accountID1[10];
+    double amount;
+    
+    node_t i;
+    i = (node_t)malloc(sizeof(node_t));
+        for(i = linkList; i != NULL; i = i->nextp)
+        {
+            if(strcmp(i->user.userID, userid) == 0)
+            {
+                printf("What account would you like to withdraw from?");
+                scanf("%s", accountID1);
+                
+                printf("Amount: ");
+                scanf("%lf", &amount);
+                
+                
+                 int j;
+                 for(j = 0; j < 6; j++)
+                 {
+                     if(strcmp(i->user.account[j].accountID, accountID1))
+                     {
+                        
+                         i->user.account[j].accountValue = i->user.account[j].accountValue + amount;
+                         printf("deposit successfull");
+                         
+                                
+                    }else
+                        {
+                            printf("Sorry the account your trying to"
+                                  " deposit to doesn't exist\n");
+                        
+                            depositMoney(linkList, userid);
+                        }
+                             
+                     }
+                 }
+             }
+             free(i);
+         }
 
 void PayUser(node_t linkList, char userid[])
 {
