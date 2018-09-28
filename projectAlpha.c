@@ -30,21 +30,64 @@ typedef struct node *node_t; /* PS: made the first value a pointer*/
 node_t readFile();
 int writeFile(node_t linkList, int numUsers);
 node_t newUser(node_t linkList, int *numUsers);
-void accountMenu(node_t linkList);
+void accountMenu(node_t linkList, char userID[]);
 
 void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
-void PayUser(node_t linkList, int amount);
+void PayUser(node_t linkList, char userID[]);
 void TransferMoney(char accountID1[],char accountID2[],int amount);
 void WithdrawMoney(char accountID[],int amount);
 void DepositMoney(char accountID[],int amount);
 void deleteAccount(char accountID[]);
+void login(node_t linkList);
 /***************************************************/
 
 int main(void)
 {
+    node_t linkList;
+    linkList = (node_t)malloc(sizeof(node_t));
+    login(linkList);
     return 0;
 }
 
+void login(node_t linkList)
+{
+    char userlogin[15];
+    char userpass[15];
+    
+    /* ask for username and password*/
+    printf("Username: ");
+    scanf("%s", userlogin);
+    
+    printf("Password: ");
+    scanf("%s", userpass);
+    
+    /* use a pointer to traverse the linkedlist*/
+    node_t i;
+    i=(node_t)malloc(sizeof(node_t));
+    
+    /*traverse linkedlist*/
+    for(i = linkList; i != NULL; i = i->nextp)
+    {
+        /*compare usernames to information*/
+        if(strcmp(i->user.username, userlogin) == 0)
+        {
+            /* compare passwords to password entered*/
+            if(strcmp(i->user.password, userpass) == 0)
+            {
+                printf("Welcome, %s", userlogin);
+                /* go to accountmenu and pass userID*/
+                accountMenu(linkList, i->user.userID);
+            }else printf("Wrong Password");
+        }else
+        { 
+        printf("Sorry this username doesn't exist in the system\n");
+        login(linkList);
+        }
+    }
+    free(i);
+}
+        
+    
 
 node_t newUser(node_t linkList, int *numUsers)
 {
@@ -136,7 +179,7 @@ int writeFile(node_t linkList, int numUsers)
     return 1; /*writing to file was successful*/
 }
 
-void accountMenu(node_t linkList)
+void accountMenu(node_t linkList, char userID[])
 {
         char input;
 /* printf("*********************************************************\n"
@@ -173,7 +216,7 @@ void accountMenu(node_t linkList)
                 switch(input)
                 {
                     /*waiting till each function is finished to connect them.*/
-                        case('1') : printf("AddNewAccount"); /*addNewAccount(linkList, userID);*/
+                        case('1') : addNewAccount(linkList, userID);
                         case('2') : printf("DeleteAccount");/*deleteAccount(accountID[]);*/
                         case('3') : printf("TransferMoney");/*TransferMoney(char accountID1[],char accountID2[],int amount);*/
                         case('4') : printf("Payuser");/*PayUser(node_t linkList, int amount);*/
@@ -190,8 +233,7 @@ void addNewAccount(node_t linkList, char* userID)
     printf("Your user ID is %s", currentID);
 
     char action;
-    printf("Do you wannt to add a new account, 
-            please enter 'y' or 'n' for next processing\n");
+    printf("Do you wannt to add a new account, please enter 'y' or 'n' for next processing\n");
     scanf("%c", &action);
     while(action != 'y' || action != 'n' || action != 'Y' || action != 'N')
     {
@@ -207,7 +249,7 @@ void addNewAccount(node_t linkList, char* userID)
 
         for(p=linkList; p!=NULL; p=p-> nextp)
         {
-            if(p->user.userID = currentID)
+            if(strcmp(p->user.userID, userID) == 0)
             {
                 if(p->user.numAccounts >= 5)
                 {
@@ -218,22 +260,24 @@ void addNewAccount(node_t linkList, char* userID)
                 {
                 int currentNum = p->user.numAccounts;
                 char* newAccountID = userID + currentNum;
-                p->user.account[currentNum+1].accountID = newAccountID;
+                strcpy(p->user.account[currentNum+1].accountID, newAccountID);
                 p->user.account[currentNum+1].accountValue = 0;
                 printf("Your new account has been added successfully\n");
-                printf("Account ID is &c and value is &lf", 
-                    p->user.account[account+1].accountID, 
+                printf("Account ID is %s and value is %lf", 
+                    p->user.account[currentNum+1].accountID, 
                     p->user.account[currentNum+1].accountValue);
             }
         }
     
     else if(action =='n' || action =='N')
     {
-        accountMenu(linklist);
+    /* call accountMenu(linklist) */
     }
 }
+}
+}
 
-void PayUser(node_t linkList, myuserid)
+void PayUser(node_t linkList, char userid[])
 {
   char id[15];
   double amount;
@@ -241,41 +285,41 @@ void PayUser(node_t linkList, myuserid)
   char accountID2[10];
 
   printf("What is the userid of the user you want to pay ?\n" );
-  scanf("%s", &id);
+  scanf("%s", id);
 
   printf("How much do you want to pay ?\n");
   scanf("%lf", &amount);
 
   printf("What is the account number you want to pay ?\n");
-  scanf("%s", &accountID2);
+  scanf("%s", accountID2);
 
   printf("With wich account do you want to pay?\n");
-  scanf("%s", &accountID1);
+  scanf("%s", accountID1);
   
     node_t i;
-        for(i = user; i != NULL; i = i->nextp)
+    i = (node_t)malloc(sizeof(node_t));
+        for(i = linkList; i != NULL; i = i->nextp)
         {
-            if(strcmp(user.userid, id) == 0)
+            if(strcmp(i->user.userID, id) == 0)
             {
                  int j;
                  for(j = 0; j < 6; j++)
                  {
-                        if(strcmp(account[j].accountID2, accountname) == 0)
+                        if(strcmp(i->user.account[j].accountID, accountID2) == 0)
                         {
-                            account[j].accountID2 += amount;
-                            myuserid.accountID1 -= amount;
+                            i->user.account[j].accountValue = i->user.account[j].accountValue + amount;
+                            /* minus the original account!!*/
                             printf("Mr/Miss %s has been paid \n",id );
                         }
                         else
                         {
                             printf("No account found with that account number \n" );
                         }
-                else
+            }
+        }else
                 {
                     printf("No user find with that id \n" );
                 }
-            }
-        }
+
     }
-   }
 }
