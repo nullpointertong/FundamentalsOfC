@@ -167,7 +167,7 @@ void TransferMoney(node_t p, node_t linkList) {
                     p->nextp->user.account[j].accountValue = p->nextp->user.account[j].accountValue - amount; /*amount subtracted from account*/
                     int k;
                     for (k = 0; k < 6; k++) {
-                        if (strcmp(p->nextp->user.account[j].accountID, accountID2)) {  /*shouldnt this be accountID2-changed**/
+                        if ((strcmp(p->nextp->user.account[j].accountID, accountID2))== 0) {  /*shouldnt this be accountID2-changed**/
                             p->nextp->user.account[k].accountValue = p->nextp->user.account[k].accountValue + amount; /*amount added added to account 2*/
                             printf("Money successfully Transferred\n");
                             accountMenu(p, linkList);
@@ -389,9 +389,3 @@ int writeFile(node_t linkList, int numUsers) {
     p = NULL; /*frees the storage space*/
     return 1; /*writing to file was successful*/
 }
-
-
-
-
-
-
