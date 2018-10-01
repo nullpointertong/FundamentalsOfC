@@ -17,6 +17,9 @@ struct user {
     account_t account[6];
     int numAccounts;
     /*added, useful when writing to file*/
+    int suFlag;
+    /*Checks if user has su i.e(admin) rights 
+    to add or modify details*/
 };
 typedef struct user user_t;
 
@@ -36,16 +39,21 @@ typedef struct map map_t;
 
 /**************Prototypes*************************/
 void login(node_t linkList);
-void accountMenu(node_t linkList, char userID[]);
-void addNewAccount(node_t linklist, char userID[]); /*Added userID*/
-void TransferMoney(node_t linkList, char userid[]);
-void PayUser(node_t linkList, char userID[]);
-void withdrawMoney(node_t linkList, char userid[]);
-void depositMoney(node_t linkList, char userid[]);
-node_t newUser(node_t linkList, int *numUsers);
+void accountMenu(node_t p, node_t linkList);
+void addNewAccount(node_t linkList, node_t p); /*Added userID*/
+void TransferMoney(node_t p, node_t linkList);
+node_t PayUser(node_t p, node_t linkList);
+void withdrawMoney(node_t p, node_t linkList);
+void depositMoney(node_t p, node_t linkList);
+void newUser(node_t linkList, int *numUsers);
 int writeFile(node_t linkList, int numUsers);
 node_t readFile();
-void deleteAccount(char accountID[]);
+void deleteAccount(node_t p);
+void startMenu(node_t linkList);
+void listAccounts(node_t p);
+char miniMenu(char name[], node_t p, node_t linkList);
+void insert_hashmap(int *employeeId,map_t hashmap[],int * new_key);
+void display_hashmap(int *employeeId,map_t hashmap[],int * new_key);
 /***************************************************/
 
 #endif
