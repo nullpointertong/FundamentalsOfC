@@ -367,13 +367,11 @@ void TransferMoney(node_t p, node_t linkList) {
     char accountID1[10];
     char accountID2[10];
     double amount;
-    if(miniMenu("Transfer", p, linkList) == '1')
-    {
         char garbage;
         garbage = getchar();
         if(garbage);
         /* if (strcmp(p->nextp->user.userID, userid) == 0) {*/
-        printf("What account would you like to transfer from?");
+        printf("What account would you like to transfer from? ");
         scanf("%s", accountID1);
         
         printf("Destination account: ");
@@ -384,19 +382,24 @@ void TransferMoney(node_t p, node_t linkList) {
         /*get 2 accountsID to be transferred from*/
         
         int j;
+        int count = 0;
         for (j = 0; j < 6; j++) {
-            if ((strcmp(p->user.account[j].accountID, accountID1))==0) {  /*doesnt it produce 0 if is equal?-changed**/
+            printf("%d", strcmp(p->user.account[j].accountID, accountID1));
+            if ((strcmp(p->user.account[j].accountID, accountID1))== 0) {  /*doesnt it produce 0 if is equal?-changed**/
                 p->user.account[j].accountValue = p->user.account[j].accountValue - amount; /*amount subtracted from account*/
                 int k;
                 for (k = 0; k < 6; k++) {
-                    if ((strcmp(p->user.account[j].accountID, accountID2))== 0) {  /*shouldnt this be accountID2-changed**/
+                    printf("%s", p->user.account[j].accountID);
+                    if ((strcmp(p->user.account[j].accountID, accountID2))== -1) {  /*shouldnt this be accountID2-changed**/
                         p->user.account[k].accountValue = p->user.account[k].accountValue + amount; /*amount added added to account 2*/
                         printf("Money successfully Transferred\n");
-                        accountMenu(p, linkList);
-                    } else {
+                        count++;
+                        
+                        
+                    } else if((strcmp(p->user.account[j].accountID, accountID2))!= -1 && count ==5) {
                         printf("Transfer unsuccessful, please check you have the right account\n");
                         p->user.account[j].accountValue = p->user.account[j].accountValue + amount; /*shouldnt this be plus not minus-changed* */
-                        TransferMoney(p, linkList);
+                        
                     }
                 }
                 
@@ -404,9 +407,8 @@ void TransferMoney(node_t p, node_t linkList) {
                 printf("Sorry the account your trying to"
                        " transfer from doesn't exist\n");
                 
-                TransferMoney(p, linkList);
+                
             }
-        }
     }
     
 }
@@ -475,7 +477,7 @@ void listAccounts(node_t p)
     }
 }
 
-int withdrawMoney(node_t p, node_t linkList) {
+void withdrawMoney(node_t p, node_t linkList) {
     
     char accountID1[15];
     double amount;
@@ -506,18 +508,16 @@ int withdrawMoney(node_t p, node_t linkList) {
             /* I can't get rid of the \n so strcmp reads for comparison plus \n*/
             if ((strcmp(p->user.account[j].accountID,
                         accountID1)) == -10) { /*search for account */
-                if (p->nextp->user.account[j].accountValue < amount)
+                if (p->user.account[j].accountValue < amount)
                 {
                     printf("Insufficient Funds\n");
-                    
-                    return 0;
+                    return;
                 }
                 p->user.account[j].accountValue =
                         p->user.account[j].accountValue - amount;
                 /*deduct value from account*/
                 printf("withdraw successfull\n");
                 found = 1;
-                return 0;
                 
                 
             }
@@ -526,11 +526,9 @@ int withdrawMoney(node_t p, node_t linkList) {
                 printf("Sorry the account your trying to"
                        " withdraw from doesn't exist\n");
                 
-                return 0;
             }
             
         }
-    return 0;
 }
 
 
