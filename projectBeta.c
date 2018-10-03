@@ -2,26 +2,91 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "projectHeader.h"
+
+/*********Structures********************/
+/*Node Structure in Order to implment a linkedlist*/
+struct account {
+    char accountID[10];
+    double accountValue;
+    int availableFlag;
+};
+typedef struct account account_t;
+
+struct user {
+    char username[15];
+    char password[15];
+    char userID[6];
+    /*made 6 for \0*/
+    account_t account[6];
+    int numAccounts;
+    /*added, useful when writing to file*/
+    int suFlag;
+    /*Checks if user has su i.e(admin) rights 
+    to add or modify details*/
+};
+typedef struct user user_t;
+
+struct node {
+    struct node* nextp;
+    user_t user;
+};
+typedef struct node* node_t;
+/* The First value a pointer*/
+
+struct map {
+    int key;
+    int value;
+};
+typedef struct map map_t;
+/****************************************/
+
+/**************Prototypes*************************/
+void login(node_t linkList);
+void accountMenu(node_t p, node_t linkList);
+void addNewAccount(node_t linkList, node_t p); /*Added userID*/
+void TransferMoney(node_t p, node_t linkList);
+node_t PayUser(node_t p, node_t linkList);
+void withdrawMoney(node_t p, node_t linkList);
+void depositMoney(node_t p, node_t linkList);
+void newUser(node_t linkList, int *numUsers);
+int writeFile(node_t linkList, int* numUsers);
+node_t readFile();
+void deleteAccount(node_t p);
+void startMenu(node_t linkList, int* numUsers);
+void listAccounts(node_t p);
+char miniMenu(char name[], node_t p, node_t linkList);
+void insert_hashmap(int *employeeId,map_t hashmap[],int * new_key);
+void display_hashmap(int *employeeId,map_t hashmap[],int * new_key);
+/***************************************************/
+
 
 int main(void) {
 
-    node_t linkList;
-    linkList = malloc(sizeof(node_t)*1);
-    startMenu(linkList);
+    node_t linkList = NULL;
+    linkList = malloc(sizeof (node_t));
+    int init = 0;
+    /*load init from database*/
+    int *numUsers = &init;
+    startMenu(linkList, numUsers);
+   /*while input='0' 
+    main
     login(linkList);
+    check file is exist?
+    if no, do create user
+    if yes, show 'Login', 'Create User' Menu*/
+    
+
     return 0;
 }
 
-void startMenu(node_t linkList)
+void startMenu(node_t linkList, int* numUsers)
 {
     char input;
-    int *numUsers;
-    /* Segmentation faults when using numUser = NULL */
-    numUsers = malloc(sizeof(int)*1);
-    /* *numUsers = 0;*/ 
+    
+     
+     
     printf("1. Login\n"
-            "2. Create Account\n");
+           "2. Create Account\n");
             
     printf("Option: ");
     scanf("%c", &input);
@@ -39,34 +104,11 @@ void startMenu(node_t linkList)
     }
 }
 
-/* Used as a submenu for functions like Transfer between accounts,
- * Deposit and withdraw. It is an easy and straight forward way to have
- * A submenu */
-char miniMenu(char name[], node_t p, node_t linkList)
-{
-    char garbage;
-    garbage = getchar();
-    if(garbage);
-    
-    char input;
-    printf("1. %s\n", name);
-      printf("2. list Accounts\n"
-            "3. Return to Menu\n");
-            
-    printf("Option: ");
-    scanf("%c", &input);
-    
-    if(input == '2') {listAccounts(p);
-                      miniMenu(name, p, linkList);}
-    if(input == '3') { accountMenu(p, linkList);};
-    return input;
-    
-}
-
-
 void login(node_t linkList) {
     char userlogin[15];
     char userpass[15];
+    
+    
 
     /* ask for username and password*/
     printf("Username: ");
@@ -82,10 +124,10 @@ void login(node_t linkList) {
     /*traverse linkedlist*/
     for (p = linkList; p != NULL; p = p->nextp) {
         /*compare usernames to information*/
-        if (strcmp(p->nextp->user.username, userlogin) == 0) {
+        if (strcmp(p->user.username, userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(p->nextp->user.password, userpass) == 0) {
-                printf("Welcome, %s", p->nextp->user.username);
+            if (strcmp(p->user.password, userpass) == 0) {
+                printf("Welcome, %s", p->user.username);
                 /* go to accountmenu and pass userID*/
                 accountMenu(p, linkList);
             } else printf("Wrong Password");
@@ -95,6 +137,82 @@ void login(node_t linkList) {
         }
     }
 }
+
+void newUser(node_t linkList, int *numUsers) {
+    ++(*numUsers);
+    node_t newUse, p; /*PS: now these are both pointers
+                       *defines 2 new nodes*/
+
+    newUse = malloc(sizeof (node_t));
+    p = malloc(sizeof (node_t));
+    /*dynamically sets their size*/
+    newUse->nextp = NULL;
+    /*sets the next node so that NULL will be the next link*/
+    p = linkList;
+    /*p used to traverse the linklist*/
+    if(p->nextp != NULL) {
+        p = p->nextp;
+    } /*will stop when p=the last node before NULL*/
+
+    /*changes the last node (previous NULL) to another node
+                      * which points to NULL*/
+
+    sprintf(p->user.userID, "%d", *numUsers);
+    printf("DEBUG USERID IS %s\n",p->user.userID);
+    /*will set the User ID to the number of users in
+     * the system (including itself) with the leasing
+     * digits being zeros*/
+    p->user.numAccounts = 0;
+    printf("Enter Your Username> \n");
+    scanf("%s", p->user.username);
+    printf("Enter Your Password> \n");
+    scanf("%s", p->user.password);
+    printf("Welcome to Richard and Co Bank!!\n");
+
+    addNewAccount(linkList, p);
+}
+
+
+
+/* Used as a submenu for functions like Transfer between accounts,
+ * Deposit and withdraw. It is an easy and straight forward way to have
+ * A submenu */
+char miniMenu(char name[], node_t p, node_t linkList)
+{
+    char garbage;
+    garbage = getchar();
+    if(garbage);
+    
+    
+    char input = '\0';
+    printf("1. %s\n", name);
+      printf("2. list Accounts\n"
+            "3. Return to Menu\n");
+            
+    printf("Option: ");
+    scanf("%c", &input);
+    if(input == '1')
+    {
+    return input;
+    }
+    if(input == '2')
+     {
+    listAccounts(p);
+    miniMenu(name, p, linkList);
+    
+    }
+    else if(input == '3') 
+    { 
+    accountMenu(p, linkList);
+    }
+    else 
+    {
+    printf("%c", input);
+    }
+    return input;
+    
+}
+
 
 void accountMenu(node_t p, node_t linkList) {
     char input;
@@ -172,33 +290,40 @@ void addNewAccount(node_t linkList, node_t p) {
     printf("Your user ID is %s", currentID);
     */
     char garbage;
-    garbage = getchar();
-    if(garbage != '\0');
+    garbage = getchar();	
+    if(garbage);
+    
     char action;
     
   
-    printf("Do you wannt to add a new account, please enter 'y' or 'n' for next processing\n");
+    printf("Do you wannt to add a new account,please enter 'y' or 'n' for next processing\n");
     scanf("%c", &action);
-    
+    	
     if (action == 'y' || action == 'Y')
     {
         
       
-        if (p->nextp->user.numAccounts >= 5) 
+        if (p->user.numAccounts >= 5) 
         {
              /*if more than 5 accounts*/
             printf("Sorry, the quota for accounts of user is full\n");
                     
         } else {
                     /* This function is broken*/
-                    int currentNum = p->nextp->user.numAccounts;
-                    char* newAccountID = p->nextp->user.userID + currentNum;  /*create new account ID*/
-                    strcpy(p->nextp->user.account[currentNum].accountID, newAccountID);
-                    p->nextp->user.account[currentNum].accountValue = 0;
+                    char newAccountID[10];
+                    int currentNum = p->user.numAccounts;
+                    /*strcat(newAccountID, strcat(p->user.userID, currentNum));  
+                    create new account ID*/
+                    sprintf(newAccountID, "%s%d", p->user.username, currentNum);
+                    strcpy(p->user.account[currentNum].accountID, newAccountID);
+                    p->user.account[currentNum].accountValue = 0;
+                    p->user.account[currentNum].availableFlag = 1;
                     printf("Your new account has been added successfully\n");
                     printf("Account ID is %s and value is $%.2lf\n",
-                           p->nextp->user.account[currentNum].accountID,
-                           p->nextp->user.account[currentNum].accountValue);
+                           p->user.account[currentNum].accountID,
+                           p->user.account[currentNum].accountValue);
+                           p->user.numAccounts = p->user.numAccounts + 1;
+                           accountMenu(p, linkList);
                 }
     } else if (action == 'n' || action == 'N') 
     {
@@ -206,7 +331,7 @@ void addNewAccount(node_t linkList, node_t p) {
     } 
     else if (action != 'n' || action != 'N')
     {
-        printf("Please neter valid input\n");
+        printf("Please enter valid input\n");
     }
 }
 
@@ -235,17 +360,17 @@ void TransferMoney(node_t p, node_t linkList) {
 
             int j;
             for (j = 0; j < 6; j++) {
-                if ((strcmp(p->nextp->user.account[j].accountID, accountID1))==0) {  /*doesnt it produce 0 if is equal?-changed**/
-                    p->nextp->user.account[j].accountValue = p->nextp->user.account[j].accountValue - amount; /*amount subtracted from account*/
+                if ((strcmp(p->user.account[j].accountID, accountID1))==0) {  /*doesnt it produce 0 if is equal?-changed**/
+                    p->user.account[j].accountValue = p->user.account[j].accountValue - amount; /*amount subtracted from account*/
                     int k;
                     for (k = 0; k < 6; k++) {
-                        if ((strcmp(p->nextp->user.account[j].accountID, accountID2))== 0) {  /*shouldnt this be accountID2-changed**/
-                            p->nextp->user.account[k].accountValue = p->nextp->user.account[k].accountValue + amount; /*amount added added to account 2*/
+                        if ((strcmp(p->user.account[j].accountID, accountID2))== 0) {  /*shouldnt this be accountID2-changed**/
+                            p->user.account[k].accountValue = p->user.account[k].accountValue + amount; /*amount added added to account 2*/
                             printf("Money successfully Transferred\n");
                             accountMenu(p, linkList);
                         } else {
                             printf("Transfer unsuccessful, please check you have the right account\n");
-                            p->nextp->user.account[j].accountValue = p->nextp->user.account[j].accountValue + amount; /*shouldnt this be plus not minus-changed* */
+                            p->user.account[j].accountValue = p->user.account[j].accountValue + amount; /*shouldnt this be plus not minus-changed* */
                             TransferMoney(p, linkList);
                         }
                     }
@@ -286,8 +411,8 @@ node_t PayUser(node_t p, node_t linkList) {
         if (strcmp(i->nextp->user.userID, id) == 0) { /*finds unknown node using userID*/
             int j;
             for (j = 0; j < 6; j++) {
-                if (strcmp(i->nextp->user.account[j].accountID, accountID2) == 0) { /*locate account for user i*/
-                    i->nextp->user.account[j].accountValue = i->nextp->user.account[j].accountValue + amount; /*pay user i*/
+                if (strcmp(i->user.account[j].accountID, accountID2) == 0) { /*locate account for user i*/
+                    i->user.account[j].accountValue = i->nextp->user.account[j].accountValue + amount; /*pay user i*/
                     /* minus the original account!!*/
                     for(j = 0; j < 6; j++)
                     {
@@ -316,11 +441,13 @@ void listAccounts(node_t p)
     int j;
     for (j = 0; j < 6; j++) 
     {
-        printf("%d Account: %s Value: $%.2lf \n", j+1, 
-        p->nextp->user.account[j].accountID, 
-        p->nextp->user.account[j].accountValue);
-    }
-    
+        if(p->user.account[j].availableFlag == 1)
+        {
+            printf("%d Account: %s Value: $%.2lf \n", j+1, 
+            p->user.account[j].accountID, 
+            p->user.account[j].accountValue);
+        }
+    }  
 }
     
 void withdrawMoney(node_t p, node_t linkList) {
@@ -352,7 +479,7 @@ void withdrawMoney(node_t p, node_t linkList) {
             int j;
             for (j = 0; j < 6; j++) {
             /* I can't get rid of the \n so strcmp reads for comparison plus \n*/
-                if ((strcmp(p->nextp->user.account[j].accountID, 
+                if ((strcmp(p->user.account[j].accountID, 
                 accountID1)) == -10) { /*search for account */
                     if (p->nextp->user.account[j].accountValue < amount)
                     {
@@ -360,8 +487,8 @@ void withdrawMoney(node_t p, node_t linkList) {
                         
                         withdrawMoney(p, linkList);
                     }
-                    p->nextp->user.account[j].accountValue = 
-                    p->nextp->user.account[j].accountValue - amount; 
+                    p->user.account[j].accountValue = 
+                    p->user.account[j].accountValue - amount; 
                     /*deduct value from account*/
                     printf("withdraw successfull\n");
                     found = 1;
@@ -379,6 +506,7 @@ void withdrawMoney(node_t p, node_t linkList) {
 
         }
     }
+    accountMenu(p, linkList);
         
 }
 
@@ -407,17 +535,18 @@ void depositMoney(node_t p, node_t linkList) {
             for (j = 0; j < 6; j++) 
             {
                 /* I can't get rid of the \n so strcmp reads for comparison plus \n*/
-                if (((strcmp(p->nextp->user.account[j].accountID, 
+                if (((strcmp(p->user.account[j].accountID, 
                     accountID1)) == -10) && found == 0) 
                     {
                     
-                    p->nextp->user.account[j].accountValue 
-                    = p->nextp->user.account[j].accountValue + amount; 
+                    p->user.account[j].accountValue 
+                    = p->user.account[j].accountValue + amount; 
                     /*add amount to account*/
                     printf("deposit successfull\n");
                     found = 1;
                     
-                    depositMoney(p, linkList);
+                   /* depositMoney(p, linkList);*/
+                  /* miniMenu("Deposit Money", p, linkList);*/
 
                     }else
                         if(j == 5 && found == 0)
@@ -429,48 +558,11 @@ void depositMoney(node_t p, node_t linkList) {
                         } 
             }
     }
+    accountMenu(p, linkList);
 }
 
 
-
-
-void newUser(node_t linkList, int *numUsers) {
-    ++(*numUsers);
-    node_t newUse, p; /*PS: now these are both pointers
-                       *defines 2 new nodes*/
-
-    newUse = malloc(sizeof (node_t));
-    p = malloc(sizeof (node_t));
-    /*dynamically sets their size*/
-    newUse->nextp = NULL;
-    /*sets the next node so that NULL will be the next link*/
-    p = linkList;
-    /*p used to traverse the linklist*/
-    while (p->nextp != NULL) {
-        p = p->nextp;
-    } /*will stop when p=the last node before NULL*/
-
-    p->nextp = newUse; /*changes the last node (previous NULL) to another node
-                      * which points to NULL*/
-
-
-
-    sprintf(p->nextp->user.userID, "05%d", *numUsers);
-    /*will set the User ID to the number of users in
-     * the system (including itself) with the leasing
-     * digits being zeros*/
-
-    printf("Enter Your Username> \n");
-    scanf("%s", p->nextp->user.username);
-    printf("Enter Your Password> \n");
-    scanf("%s", p->nextp->user.password);
-    printf("Welcome to Richard and Co Bank!!\n");
-
-    addNewAccount(linkList, p);
-
-}
-
-int writeFile(node_t linkList, int numUsers) {
+int writeFile(node_t linkList, int* numUsers) {
     FILE*fp;
 
     fp = fopen("Database.txt", "w");
@@ -483,7 +575,7 @@ int writeFile(node_t linkList, int numUsers) {
         return 0;
     }
 
-    fprintf(fp, "%d ", numUsers); /*prints number of uses, used when reading
+    fprintf(fp, "%d ", *numUsers); /*prints number of uses, used when reading
                                    * the file*/
     node_t p;
     p = malloc(sizeof (node_t));
@@ -492,12 +584,12 @@ int writeFile(node_t linkList, int numUsers) {
     for (p = linkList; p != NULL; p = p->nextp)
         /*prints each value for each user until the next */ {
         fprintf(fp, "%s %s %s %d ", p->user.userID, p->user.username,
-                p->user.userID, p->user.numAccounts);
+                p->user.password, p->user.numAccounts);
         /*numAccounts used to determine how many accounts to print*/
 
-        for (count = 0; count < p->user.numAccounts; ++count) {
-            fprintf(fp, "%s %lf ", p->user.account[count].accountID,
-                    p->user.account[count].accountValue);
+        for (count = 0; count < p->user.numAccounts; ) {
+            fprintf(fp, "%s %lf %d", p->user.account[count].accountID,
+                    p->user.account[count].accountValue, p->user.account[count].availableFlag);
             /*prints account num and value for each account he user has*/
         }
     }
