@@ -1,4 +1,4 @@
-#include "projectheaderBeta.h"
+#include "projectheaderOmega.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
