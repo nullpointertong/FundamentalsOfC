@@ -1,4 +1,4 @@
-#include "projectheaderOmega.h"
+#include "projectheaderBeta.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,28 +15,22 @@ int main(void) {
    char input_s= startMenu();
    node_t p;
    p= (node_t)(malloc(sizeof (node_t)*1));
+   
     switch (input_s)
     {
         case('1') : {
-           login(linkList, p);
+           p=login(linkList, p);
             break;
         }
         case('2') : {
-            newUser(linkList, numUsers, p);
-           /* sprintf(p->user.userID, "%d", *numUsers);
-            printf("DEBUG USERID IS %s\n",p->user.userID);
-            will set the User ID to the number of users in
-             the system (including itself) with the leasing
-              digits being zeros
-    
-            printf("Enter Your Username> \n");
-            scanf("%s", p->user.username);
-            printf("Enter Your Password> \n");
-            scanf("%s", p->user.password);
-            printf("Welcome to Richard and Co Bank!!\n");*/
-            p->user.numAccounts = 0;
-            addNewAccount(linkList, p);
-            printf("\n yeeeet %s", p->user.userID);
+            p=newUser(linkList, numUsers, p);
+            /*printf("user:%s", p->user.username);
+            if(p==NULL)
+            {
+                printf("ghey");
+            }*/
+            while (addNewAccount(linkList, p)==0);
+            /*printf("\n yeeeet %s", p->user.userID);*/
             break;
         }
         default : printf("Please enter a valid option");
@@ -118,7 +112,7 @@ char startMenu() {
     }
 }
 */
-void login(node_t linkList, node_t p) {
+node_t login(node_t linkList, node_t p) {
        char userlogin[15];
        char userpass[15];
     
@@ -141,28 +135,23 @@ void login(node_t linkList, node_t p) {
                if (strcmp(p->user.password, userpass) == 0) {
                    printf("Welcome, %s", p->user.username);
                    /* go to accountmenu and pass userID*/
-                   accountMenu(p, linkList);
                } else printf("Wrong Password");
            } else {
                printf("Sorry this username doesn't exist in the system\n");
                login(linkList, p);
            }
        }
+    return p;
 }
 
-void newUser(node_t linkList, int *numUsers, node_t p) {
+node_t newUser(node_t linkList, int *numUsers, node_t p) {
     ++(*numUsers);
-    /*node_t newUse; PS: now these are both pointers
-                       defines 2 new nodes
     
-    newUse = malloc(sizeof (node_t));*/
-   
-    /*dynamically sets their size*/
-   /* newUse->nextp = NULL;*/
-    /*sets the next node so that NULL will be the next link*/
-   /* p = linkList;*/
+       /*sets the next node so that NULL will be the next link*/
+    p = linkList;
     /*p used to traverse the linklist*/
-    if(p->nextp != NULL) {
+    while(p->nextp != NULL)
+    {
         p = p->nextp;
         
     } /*will stop when p=the last node before NULL*/
@@ -170,21 +159,33 @@ void newUser(node_t linkList, int *numUsers, node_t p) {
     /*changes the last node (previous NULL) to another node
                       * which points to NULL*/
     
-    sprintf(p->user.userID, "%d", *numUsers);
+    node_t newUse;
+    
+    newUse = malloc(sizeof (node_t));
+    
+    /*dynamically sets their size*/
+    sprintf(newUse->user.userID, "%d", *numUsers);
     printf("DEBUG USERID IS %s\n",p->user.userID);
     /*will set the User ID to the number of users in
      * the system (including itself) with the leasing
      * digits being zeros*/
     
     printf("Enter Your Username> \n");
-    scanf("%s", p->user.username);
+    scanf("%s", newUse->user.username);
     printf("Enter Your Password> \n");
-    scanf("%s", p->user.password);
+    scanf("%s", newUse->user.password);
     printf("Welcome to Richard and Co Bank!!\n");
-    p->user.numAccounts = 0;
+    newUse->user.numAccounts = 0;
     
+    newUse->nextp=NULL;
     
+    p->nextp=newUse;
     
+    p=p->nextp;
+    
+    /*free(newUse);*/
+    
+   return p;
 }
 
 
@@ -325,6 +326,7 @@ int addNewAccount(node_t linkList, node_t p) {
         {
             /*if more than 5 accounts*/
             printf("Sorry, the quota for accounts of user is full\n");
+            return 1;
             
         } else {
             /* This function is broken*/
@@ -342,13 +344,13 @@ int addNewAccount(node_t linkList, node_t p) {
                    p->user.account[currentNum].accountValue);
             p->user.numAccounts = p->user.numAccounts + 1;
             
-            printf("\nyeee%d", p->user.account->availableFlag);
+            /*printf("\nyeee%d", p->user.account->availableFlag);*/
             return 1;
             
         }
     } else if (action == 'n' || action == 'N')
     {
-        return 0;
+        return 1;
     }
     else if (action != 'n' || action != 'N')
     {
