@@ -7,7 +7,7 @@
 int main(void) {
 
     node_t linkList;
-    linkList = malloc(sizeof (node_t));
+    linkList = malloc(sizeof(node_t)*1);
     startMenu(linkList);
     login(linkList);
     return 0;
@@ -16,8 +16,10 @@ int main(void) {
 void startMenu(node_t linkList)
 {
     char input;
-    int *numUsers = NULL;
-    *numUsers = 0; 
+    int *numUsers;
+    /* Segmentation faults when using numUser = NULL */
+    numUsers = malloc(sizeof(int)*1);
+    /* *numUsers = 0;*/ 
     printf("1. Login\n"
             "2. Create Account\n");
             
