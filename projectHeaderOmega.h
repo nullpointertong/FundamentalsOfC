@@ -37,14 +37,14 @@ typedef struct map map_t;
 /****************************************/
 
 /**************Prototypes*************************/
-void login(node_t linkList, node_t p);
+node_t login(node_t linkList, node_t p);
 char accountMenu();
 int addNewAccount(node_t linkList, node_t p); /*Added userID*/
 void TransferMoney(node_t p, node_t linkList);
 node_t PayUser(node_t p, node_t linkList);
 int withdrawMoney(node_t p, node_t linkList);
 int depositMoney(node_t p, node_t linkList);
-void newUser(node_t linkList, int *numUsers, node_t p);
+node_t newUser(node_t linkList, int *numUsers, node_t p);
 int writeFile(node_t linkList, int* numUsers);
 node_t readFile();
 void deleteAccount(node_t p);
