@@ -64,7 +64,7 @@ int main(void) {
                 break;
                 
             case ('3'):
-                TransferMoney(p, linkList);
+                TransferMoney(p, linkList, debugFlag);
                 break;
                 
             case ('4'): {
@@ -404,7 +404,7 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
 
 
 
-void TransferMoney(node_t p, node_t linkList) {
+void TransferMoney(node_t p, node_t linkList, int debugFlag) {
     /*Transfer money from one account into another account*/
     char accountID1[10];
     char accountID2[10];
@@ -430,10 +430,23 @@ void TransferMoney(node_t p, node_t linkList) {
             if ((strcmp(p->user.account[j].accountID, accountID1))== 0) {
                 if (p->user.account[j].accountValue >= amount){  /*doesnt it produce 0 if is equal?-changed**/
                 p->user.account[j].accountValue = p->user.account[j].accountValue - amount; /*amount subtracted from account*/
+                
+                if(debugFlag==1)                                           /*debug*/
+                        printf("\nDEBUG: \n"
+                       "Amount= %.2lf\n"
+                       "p->user.account[j].accountValue= %.2lf\n", 
+                       amount, 
+                       p->user.account[j].accountValue);
             
             }else {
                 printf("Insufficient Funds\n");
                 once = 1;
+                if(debugFlag==1)                                           /*debug*/
+                        printf("\nDEBUG: \n"
+                       "Amount= %.2lf\n"
+                       "p->user.account[j].accountValue= %.2lf\n", 
+                       amount, 
+                       p->user.account[j].accountValue);
                 return;
             }
                 int k;
@@ -442,16 +455,32 @@ void TransferMoney(node_t p, node_t linkList) {
                         p->user.account[k].accountValue = p->user.account[k].accountValue + amount; /*amount added added to account 2*/
                         printf("Money successfully Transferred\n");
                         once = 1;
+                        if(debugFlag==1)                                           /*debug*/
+                        printf("\nDEBUG: \n"
+                       "p->user.account[k].accountID= %s\n"
+                       "p->user.account[k].accountValue= %.2lf\n", 
+                       p->user.account[k].accountID, 
+                       p->user.account[k].accountValue);
+                       
                         
                         
                    } 
                         
                     }
-                }else if((strcmp(p->user.account[j].accountID, accountID2)) != 0 && once == 0) {
+                }else if(((strcmp(p->user.account[j].accountID, accountID2) || (strcmp(p->user.account[j].accountID, accountID1))) != 0 && once == 0)) {
                         printf("Transfer unsuccessful, please check you have the right account\n");
                     
                         once = 1;
-                
+                        if(debugFlag==1){
+                                            /*debug*/
+                        printf("\nDEBUG: \n"
+                       "p->user.account[j].accountID = %s\n"
+                       "Input ACCOUNTID = %s\n"
+                       "Input ACCOUNTID2 = %s\n",
+                        p->user.account[j].accountID, accountID1,
+                        accountID2);
+                        listAccounts(p); 
+                }
             }
     }
     
@@ -715,7 +744,3 @@ void display_hashmap(int *employeeId,map_t hashmap[],int * new_key)
         printf("%d %d\n",hashmap[i].value, hashmap[i].key);
     }
 }
-
-
-
-
