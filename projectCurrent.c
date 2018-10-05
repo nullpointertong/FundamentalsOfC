@@ -1,4 +1,4 @@
-#include "projectHeaderOmega.h"
+#include "projectCurrentHeader.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
