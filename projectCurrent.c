@@ -81,6 +81,7 @@ int main(void) {
                 depositMoney(p, linkList, debugFlag);
                 break;
             case ('0'):{
+                writeFile(linkList, numUsers);
                 exit(0);
             }
             default: {
