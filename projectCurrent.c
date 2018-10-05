@@ -1,4 +1,4 @@
-#include "projectCurrentHeader.h"
+#include "projectHeaderOmega.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -81,7 +81,6 @@ int main(void) {
                 depositMoney(p, linkList, debugFlag);
                 break;
             case ('0'):{
-            writeFile(p, numUsers);
                 exit(0);
             }
             default: {
@@ -92,13 +91,10 @@ int main(void) {
         
         }
     }
-    
-    /*while input='0'
-     main
-     login(linkList);
-     check file is exist?
-     if no, do create user
-     if yes, show 'Login', 'Create User' Menu*/
+    if(writeFile(linkList, numUsers)==1)
+                    printf("yay!!");
+                else printf("nay");
+                return 0;
     
     
     return 0;
@@ -452,6 +448,7 @@ void TransferMoney(node_t p, node_t linkList) {
                     }
                 }else if((strcmp(p->user.account[j].accountID, accountID2)) != 0 && once == 0) {
                         printf("Transfer unsuccessful, please check you have the right account\n");
+                    
                         once = 1;
                 
             }
@@ -663,42 +660,34 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 
 
-int writeFile(node_t p, int* numUsers)
+int writeFile(node_t linkList, int* numUsers)
 {
-    printf("open");
-    FILE* fp;
-  
-   
-    fp = fopen("Database.txt", "wr+");
+    printf("pass:%s", linkList->nextp->user.password);
+    FILE* fp; /*pointer to database file*/
+    printf("pass:%s", linkList->nextp->user.password);
+    fp=fopen("Database.txt", "wr+"); /*locates and opens/creates database file*/
     
-   
-    
-    if (fp == NULL) /*if file fails to open function ends*/ {
-        return 0;
+    if(fp==NULL)
+    {
+        return 0; /*failure*/
     }
-    printf("%s", p->user.username);
     
-    fprintf(fp, "%d ", *numUsers); /*prints number of uses, used when reading
-                                   * the file*/
+   fprintf(fp, "numUsers=%d ", *numUsers); /*prints number of users first, to be used upon loading DB*/
     
-    
-    /*sets data size for pointer*/
-    int count; /*used to count through user accounts*/
-        fprintf(fp, "%s %s %s %d \n", p->user.userID, p->user.username,
-                p->user.password, p->user.numAccounts);
-        /*numAccounts used to determine how many accounts to print*/
-        
-        for (count = 0; count < p->user.numAccounts; ++count) {
-            fprintf(fp, "%s %.2lf %d\n", p->user.account[0].accountID,
-                    p->user.account[0].accountValue, p->user.account[0].availableFlag);
-            /*prints account num and value for each account he user has*/
-        }
-        
-        if (fp == NULL) /*if file fails to open function ends*/ {
-        return 0;
+    node_t i;
+    i=malloc(sizeof(node_t)*1); /*used to traverse linklist*/
+    for(i=linkList->nextp; i!=NULL;i=i->nextp)
+    { printf("pass:%s", linkList->nextp->user.password);
+        fprintf(fp, "Username= %s password= %s %s %d ", i->user.username,
+                i->user.password, i->user.userID,
+                i->user.numAccounts);
+        /*prints username, password and userID for every user on linklist*/
     }
     fclose(fp);
-    return 1; /*writing to file was successful*/
+    free(i);
+    
+  
+    return 1;
 }
 
 void insert_hashmap(int *employeeId,map_t hashmap[], int *new_key)
