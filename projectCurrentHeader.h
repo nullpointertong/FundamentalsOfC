@@ -51,6 +51,7 @@ int writeFile(node_t p, int* numUsers);
 node_t readFile();
 void deleteAccount(node_t p);
 char startMenu();
+void userMenu(node_t linkList, node_t p, int debugFlag, int *numUsers);
 void listAccounts(node_t p);
 char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
