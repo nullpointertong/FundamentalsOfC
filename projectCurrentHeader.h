@@ -40,7 +40,7 @@ typedef struct map map_t;
 node_t login(node_t linkList, node_t p,int debugFlag);
 char accountMenu();
 int addNewAccount(node_t linkList, node_t p, int debugFlag); /*Added userID*/
-void TransferMoney(node_t p, node_t linkList);
+void TransferMoney(node_t p, node_t linkList, int debugFlag);
 node_t PayUser(node_t p, node_t linkList);
 void withdrawMoney(node_t p, node_t linkList, int debugFlag);
 int depositMoney(node_t p, node_t linkList, int debugFlag);
@@ -53,5 +53,6 @@ void listAccounts(node_t p);
 char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId,map_t hashmap[],int * new_key);
 void display_hashmap(int *employeeId,map_t hashmap[],int * new_key);
+int writeFileV3(node_t linkList, int* numUsers);
 /***************************************************/
 #endif
