@@ -77,7 +77,7 @@ int main(void) {
                 break;
             }
             case ('5'):
-                PayUser(p, linkList);
+                userMenu(linkList, p ,debugFlag, numUsers);
                 break;
             case ('6'):
                 withdrawMoney(p, linkList, debugFlag);
@@ -106,6 +106,31 @@ int main(void) {
 
     return 0;
 }
+/* Used to create a new user from the accountMenu*/
+void userMenu(node_t linkList, node_t p, int debugFlag, int *numUsers) {
+    char input;
+
+
+    printf("1. Login\n"
+            "2. Create Account\n");
+
+    printf("Option: ");
+    scanf(" %c", &input);
+
+   
+   switch(input){
+       case('1') : {
+           p = login(linkList, p, debugFlag);
+                break;
+            }
+            case('2') : { 
+                p = newUser(linkList, numUsers, p, debugFlag);
+                while (addNewAccount(linkList, p, debugFlag) == 0);
+                break;
+            }
+             printf("Please enter a valid option\n");
+         }
+}   
 
 char startMenu() {
     char input;
@@ -117,8 +142,20 @@ char startMenu() {
     printf("Option: ");
     scanf(" %c", &input);
 
-    return input;
-}
+   
+   switch(input){
+       case('1') : {
+           return input;
+                break;
+            }
+            case('2') : { 
+                return input;
+                break;
+            }
+             printf("Please enter a valid option\n");
+         }
+         return input;
+}   
 
 /* switch (input) {
      case('1') : {
@@ -290,7 +327,7 @@ char accountMenu() {
             "2. Delete Account\n"
             "3. Transfer Between Accounts\n"
             "4. List Accounts\n"
-            "5. Pay Others\n"
+            "5. Add New User\n" /* new user*/
             "6. Withdraw Money\n"
             "7. Deposit Money\n"
             "0. exit\n");
