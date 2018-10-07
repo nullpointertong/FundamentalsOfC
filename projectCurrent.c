@@ -1,4 +1,4 @@
-#include "projectCurrentHeader.h"
+#include "projectHeaderOmega.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,14 +9,6 @@ int main(void) {
     
     node_t linkList ;
     linkList = malloc(sizeof (node_t));  /*initialise the linkList*/
-    
-    
-    
-    printf("enter shite >");
-    
-    scanf("%s", linkList->user.password);
-    
-    printf("%s", linkList->user.password);
     
     
     int *numUsers;
@@ -193,26 +185,26 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     newUse = malloc(sizeof (node_t));
     
     /*dynamically sets their size*/
-    sprintf(newUse->user.userID, "%d", *numUsers);
+    sprintf(linkList->user.userID, "%d", *numUsers);
     
     /*will set the User ID to the number of users in
      * the system (including itself) with the leasing
      * digits being zeros*/
     
     printf("Enter Your Username> \n");
-    scanf("%s", newUse->user.username);
+    scanf("%s", linkList->user.username);
     printf("Enter Your Password> \n");
-    scanf("%s", newUse->user.password);
+    scanf("%s", linkList->user.password);
     printf("Welcome to Richard and Co Bank!!\n");
     if(debugFlag==1)                                        /*debug*/
         printf("\nDEBUG: \n"
                "newUse->user.username= %s\n"
-               "newUse p->user.password= %s\n", newUse->user.username,
-               newUse->user.password);
+               "newUse p->user.password= %s\n", linkList->user.username,
+               linkList->user.password);
     
-    newUse->user.numAccounts = 0;
+    linkList->user.numAccounts = 0;
     
-    newUse->nextp=NULL;
+    linkList->nextp=NULL;
     
     p->nextp=newUse;
     
@@ -713,7 +705,7 @@ int writeFileV3(node_t linkList, int* numUsers)
     
     for(i=linkList->nextp; i!=NULL; i=i->nextp)
     {
-        fprintf(p, "username= %s, password= %s", i->user.username, linkList->user.password);
+        fprintf(p, "username= %s, password= %s", linkList->user.username, linkList->user.password);
     }
     
     return 1;
