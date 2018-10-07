@@ -8,16 +8,11 @@ int main(void) {
 
     node_t linkList;
     linkList = malloc(sizeof (node_t)); /*initialise the linkList*/
-
-
-
     /*printf("enter shite >");
     
     scanf("%s", linkList->user.password);
     
     printf("%s", linkList->user.password);*/
-
-
     int *numUsers;
     numUsers = malloc(sizeof (int)*1); /*initialise numUsers*/
     node_t p;
@@ -698,17 +693,22 @@ void display_hashmap(int *employeeId, map_t hashmap[], int * new_key) {
     }
 }
 
-//Encrypts using XOR bitwise Operation
+/* Encrypts using XOR bitwise Operation */
 char * encrypt(char * encryptMessage, char * key)
 {
     int messageLength = strlen(encryptMessage); 
     int keyLength = strlen(key);
     char * encryped = malloc(messageLength + 1);
     int i; 
-    for(i = 0 ; i<messageLength; i++)
+    for(i = 0 ; i<=messageLength; i++)
     {
+    	if(&encryped[i] != NULL){
         encryped[i] = encryptMessage[i] ^ key[i % keyLength]; 
+        }
+        else{
+        encryped[i] = 0;
+        }
     }
-    encryped[messageLength] = "\0";
-    return encryped;
+     return encryped;
 }
+
