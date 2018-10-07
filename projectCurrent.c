@@ -9,7 +9,16 @@ int main(void) {
     
     node_t linkList ;
     linkList = malloc(sizeof (node_t));  /*initialise the linkList*/
-     
+    
+    
+    
+    /*printf("enter shite >");
+    
+    scanf("%s", linkList->user.password);
+    
+    printf("%s", linkList->user.password);*/
+    
+    
     int *numUsers;
     numUsers=malloc(sizeof(int)*1); /*initialise numUsers*/
     node_t p;
@@ -69,7 +78,7 @@ int main(void) {
                 break;
             
             case ('4'): {
-                listAccounts(linkList);
+                listAccounts(p);
                 break;
             }
             case ('5'):
@@ -82,6 +91,7 @@ int main(void) {
                 depositMoney(p, linkList, debugFlag);
                 break;
             case ('0'):{
+                printf("userID=%s", linkList->nextp->user.userID);
                 writeFileV3(linkList, numUsers);
                 exit(0);
             }
@@ -149,10 +159,10 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
         if(debugFlag==1)                                     /*debug*/
             printf("\nDEBUG: \n"
                    "current p->user.username =%s\n"
-                   "current p->user.password =%s\n", p->user.username, p->user.password);
+                   "current p->user.password =%s\n", p->user.username, p->user.password_1);
         if (strcmp(p->user.username, userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(p->user.password, userpass) == 0) {
+            if (strcmp(p->user.password_1, userpass) == 0) {
                 printf("Welcome, %s", p->user.username);
                 /* go to accountmenu and pass userID*/
             } else printf("Wrong Password");
@@ -184,26 +194,26 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     newUse = malloc(sizeof (node_t));
     
     /*dynamically sets their size*/
-    sprintf(linkList->user.userID, "%d", *numUsers);
+    sprintf(newUse->user.userID, "%d", *numUsers);
     
     /*will set the User ID to the number of users in
      * the system (including itself) with the leasing
      * digits being zeros*/
     
     printf("Enter Your Username> \n");
-    scanf("%s", linkList->user.username);
+    scanf("%s", newUse->user.username);
     printf("Enter Your Password> \n");
-    scanf("%s", linkList->user.password);
+    scanf("%s", newUse->user.password_1);
     printf("Welcome to Richard and Co Bank!!\n");
     if(debugFlag==1)                                        /*debug*/
         printf("\nDEBUG: \n"
                "newUse->user.username= %s\n"
-               "newUse p->user.password= %s\n", linkList->user.username,
-               linkList->user.password);
+               "newUse p->user.password= %s\n", newUse->user.username,
+               newUse->user.password_1);
     
-    linkList->user.numAccounts = 0;
+    newUse->user.numAccounts = 0;
     
-    linkList->nextp=NULL;
+    newUse->nextp=NULL;
     
     p->nextp=newUse;
     
@@ -212,9 +222,9 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     if(debugFlag==1)                                        /*debug*/
         printf("\nDEBUG: \n"
                "p->user.username= %s\n"
-               "p->user.password= %s\n", p->user.username, p->user.password);
+               "p->user.password= %s\n", p->user.username, p->user.password_1);
     
-    return linkList;
+    return p;
 }
 
 
@@ -342,7 +352,7 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
     if(garbage);
     
     char action;
-    linkList->nextp = malloc(sizeof(node_t)*1);
+    
     
     printf("Do you wannt to add a new account,please enter 'y' or 'n' for next processing\n");
     scanf("%c", &action);
@@ -353,9 +363,9 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
     if (action == 'y' || action == 'Y')
     {
         if(debugFlag==1)                                           /*debug*/
-            printf("\nDEBUG: linkList->user.numAccounts= %d\n", linkList->user.numAccounts);
+            printf("\nDEBUG: p->user.numAccounts= %d\n", p->user.numAccounts);
         
-        if (linkList->user.numAccounts >= 5)
+        if (p->user.numAccounts >= 5)
         {
             /*if more than 5 accounts*/
             printf("Sorry, the quota for accounts of user is full\n");
@@ -363,32 +373,29 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
             
         } else {
             
-           
             char newAccountID[10];
-            int currentNum = linkList->user.numAccounts;
+            int currentNum = p->user.numAccounts;
             
-            sprintf(newAccountID, "%s%d", linkList->user.username, currentNum);
+            sprintf(newAccountID, "%s%d", p->user.username, currentNum);
             /*creates newAccountID= username+numaccounts*/
             if(debugFlag==1)                                           /*debug*/
                 printf("\nDEBUG: newAccountID= %s\n", newAccountID);
-            strcpy(linkList->user.account[currentNum].accountID, newAccountID);
-            
+            strcpy(p->user.account[currentNum].accountID, newAccountID);
             /*copies newAccountID to linklist*/
-            linkList->user.account[currentNum].accountValue = 0;
-            linkList->user.account[currentNum].availableFlag = 1;
+            p->user.account[currentNum].accountValue = 0;
+            p->user.account[currentNum].availableFlag = 1;
             printf("Your new account has been added successfully\n");
             printf("Account ID is %s and value is $%.2lf\n",
-                   linkList->user.account[currentNum].accountID,
-                   linkList->user.account[currentNum].accountValue);
-            linkList->user.numAccounts = linkList->user.numAccounts + 1;
-            printf("%d", linkList->user.numAccounts);
+                   p->user.account[currentNum].accountID,
+                   p->user.account[currentNum].accountValue);
+            p->user.numAccounts = p->user.numAccounts + 1;
             
             if(debugFlag==1)                                           /*debug*/
                 printf("\nDEBUG: \n"
-                       "linkList->user.numAccounts= %d\n"
-                       "linkList->user.account[currentNum].availableFlag= %d\n",
-                       linkList->user.numAccounts,
-                       linkList->user.account[currentNum].availableFlag);
+                       "p->user.numAccounts= %d\n"
+                       "p->user.account[currentNum].availableFlag= %d\n",
+                       p->user.numAccounts,
+                       p->user.account[currentNum].availableFlag);
             return 1;
             
         }
@@ -538,16 +545,16 @@ node_t PayUser(node_t p, node_t linkList) {
     return p;
 }
 
-void listAccounts(node_t linkList)
+void listAccounts(node_t p)
 {
     int j;
     for (j = 0; j < 6; j++)
     {
-        if(linkList->user.account[j].availableFlag == 1)
+        if(p->user.account[j].availableFlag == 1)
         {
             printf("%d Account: %s Value: $%.2lf \n", j+1,
-                   linkList->user.account[j].accountID,
-                   linkList->user.account[j].accountValue);
+                   p->user.account[j].accountID,
+                   p->user.account[j].accountValue);
         }
     }
 }
@@ -586,27 +593,27 @@ void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
     int j;
     for (j = 0; j < 6; j++) {
         /* I can't get rid of the \n so strcmp reads for comparison plus \n*/
-        if ((strcmp(linkList->user.account[j].accountID,
+        if ((strcmp(p->user.account[j].accountID,
                     accountID1)) == -10) { /*search for account */
             if(debugFlag==1)                                           /*debug*/
-                printf("\nDEBUG: current linkList->user.account[j].accountID= %s\n",
-                       linkList->user.account[j].accountID);
-            if (linkList->user.account[j].accountValue < amount)
+                printf("\nDEBUG: current p->user.account[j].accountID= %s\n",
+                       p->user.account[j].accountID);
+            if (p->user.account[j].accountValue < amount)
             {
                 printf("Insufficient Funds\n");
                 if(debugFlag==1)                                           /*debug*/
-                    printf("\nDEBUG: linkList->user.account[j].accountValue= %lf\n",
-                           linkList->user.account[j].accountValue);
+                    printf("\nDEBUG: p->user.account[j].accountValue= %lf\n",
+                           p->user.account[j].accountValue);
                 return;
             }
-            linkList->user.account[j].accountValue =
-                    linkList->user.account[j].accountValue - amount;
+            p->user.account[j].accountValue =
+                    p->user.account[j].accountValue - amount;
             /*deduct value from account*/
             printf("withdraw successfull\n");
             found = 1;
             if(debugFlag==1)                                           /*debug*/
-                printf("\nDEBUG: linkList->user.account[j].accountValue= %lf\n",
-                       linkList->user.account[j].accountValue);
+                printf("\nDEBUG: p->user.account[j].accountValue= %lf\n",
+                       p->user.account[j].accountValue);
             
             
         }
@@ -652,19 +659,19 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     for (j = 0; j < 6; j++)
     {
         if(debugFlag==1)                                           /*debug*/
-            printf("\nDEBUG: current linkList->user.account[j].accountID= %s\n",
-                   linkList->user.account[j].accountID);
+            printf("\nDEBUG: current p->user.account[j].accountID= %s\n",
+                   p->user.account[j].accountID);
         /* I can't get rid of the \n so strcmp reads for comparison plus \n*/
-        if (((strcmp(linkList->user.account[j].accountID,
+        if (((strcmp(p->user.account[j].accountID,
                      accountID1)) == -10) && found == 0)
         {
             
             if(debugFlag==1)                                           /*debug*/
-                printf("\nDEBUG: linkList->user.account[j].accountValue= %lf\n",
-                       linkList->user.account[j].accountValue);
+                printf("\nDEBUG: p->user.account[j].accountValue= %lf\n",
+                       p->user.account[j].accountValue);
             
-            linkList->user.account[j].accountValue
-                    = linkList->user.account[j].accountValue + amount;
+            p->user.account[j].accountValue
+                    = p->user.account[j].accountValue + amount;
             /*add amount to account*/
             printf("deposit successfull\n");
             found = 1;
@@ -683,8 +690,8 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     }
     
     if(debugFlag==1)                                           /*debug*/
-        printf("\nDEBUG: linkList->user.account[j].accountValue= %lf\n",
-               linkList->user.account[j].accountValue);
+        printf("\nDEBUG: p->user.account[j].accountValue= %lf\n",
+               p->user.account[j].accountValue);
     
     return 0;
 }
@@ -692,32 +699,38 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 
 
-int writeFileV3(node_t linkList, int* numUsers)
+int writeFileV3( const node_t linkList, int* numUsers)
 {
-    FILE* p;
     
+    user_t file;
+    account_t accounts[linkList->nextp->user.numAccounts-1];
+    
+    printf("userID=%s ", linkList->nextp->user.username);
+    
+    file=linkList->nextp->user;
+    
+    
+    
+    printf("userID=%s ", file.username);
+    FILE* p;
+   
     p=fopen("halp.txt", "w");
     
     fprintf(p, "%d ", *numUsers);
     
-    node_t i;
+   
     
-    i=malloc(sizeof(linkList)*1);
+        fprintf(p, "username= %s, password= %s, userID= %s, numAccounts= %d ", file.username, file.password_1, file.userID, file.numAccounts);
+        
+        
+        
+            fprintf(p, "accountID= %s, accountValue= %lf, accountFlag= %d", accounts[0].accountID, accounts[0].accountValue, accounts[0].availableFlag);
+        
     
-    for(i=linkList->nextp; i!=NULL; i=i->nextp)
-    {
-        fprintf(p, "username= %s, password= %s",
-         linkList->user.username, linkList->user.password);
-         int k;
-         for(k = 0; k < 6; ++k){
-            if(linkList->user.account[k].availableFlag == 1){
-                fprintf(p, " accountID= %s, accountVal= %.2lf",
-                linkList->user.account[k].accountID, 
-                linkList->user.account[k].accountValue);
-                }
-            
-         }
-    }
+    
+    
+    
+    
     
     return 1;
 }
