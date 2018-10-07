@@ -1,6 +1,5 @@
 #ifndef PROJECT_HEADER_OMEGA_H
 /*********Structures********************/
-
 /*Node Structure in Order to implment a linkedlist*/
 struct account {
     char accountID[10];
@@ -57,5 +56,6 @@ char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 int writeFileV3(node_t linkList, int* numUsers);
+char * encrypt(char * encryptMessage, char * key);
 /***************************************************/
 #endif

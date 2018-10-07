@@ -698,7 +698,6 @@ void display_hashmap(int *employeeId, map_t hashmap[], int * new_key) {
     }
 }
 
-
 //Encrypts using XOR bitwise Operation
 char * encrypt(char * encryptMessage, char * key)
 {
