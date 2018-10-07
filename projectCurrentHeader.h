@@ -9,12 +9,16 @@ struct account {
 typedef struct account account_t;
 
 struct user {
-    char username[15];
-    char password[15];
+    
+    char username[10];
+    char password_1[10];
+    
+    
     char userID[6];
     /*made 6 for \0*/
     account_t account[6];
     int numAccounts;
+    
     /*added, useful when writing to file*/
     int suFlag;
     /*Checks if user has su i.e(admin) rights
