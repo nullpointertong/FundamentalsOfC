@@ -15,7 +15,7 @@ struct user {
     /*made 6 for \0*/
     account_t account[6];
     int numAccounts;
-
+    
     /*added, useful when writing to file*/
     int suFlag;
     /*Checks if user has su i.e(admin) rights
@@ -51,7 +51,7 @@ int writeFile(node_t p, int* numUsers);
 node_t readFile();
 void deleteAccount(node_t p);
 char startMenu();
-void userMenu(node_t linkList, node_t p, int debugFlag, int *numUsers);
+node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers);
 void listAccounts(node_t p);
 char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
