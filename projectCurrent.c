@@ -16,41 +16,11 @@ int main(void) {
     int *numUsers;
     numUsers = malloc(sizeof (int)*1); /*initialise numUsers*/
     node_t p;
-    p = (node_t) (malloc(sizeof (node_t)*1));
+    p=malloc(sizeof (node_t)*1);
     int debugFlag = 0;
-    char input_s = 'a'; /*initialise input */
-    while ((input_s != '1')&&(input_s != '2')) {
-        input_s = startMenu(); /*go to start menu and get user option*/
-        switch (input_s) /*goto user option*/ {
-            case ('1'):
-            {
-                p = login(linkList, p, debugFlag);
-                break;
-            }
-            case ('2'):
-            {
-                p = newUser(linkList, numUsers, p, debugFlag);
-                while (addNewAccount(linkList, p, debugFlag) == 0);
-                
-                break;
-            }
-            case ('d'): /*toggles debug mode on or off*/
-            case ('D'):
-            {
-                if (debugFlag == 0) {
-                    debugFlag = 1; /*on*/
-                    printf("\nDEBUG mode: on\n");
-                } else if (debugFlag == 1) {
-                    debugFlag = 0; /*off*/
-                    printf("\nDEBUG mode: off\n");
-                }
-            }
-            default:
-                printf("Please enter a valid option\n");
-                if (debugFlag == 1)
-                    printf("\nDEBUG: input_s =%c\n", input_s);
-        }
-    } /*will loop until a valid input is added*/
+   p= userMenu(linkList, p, &debugFlag, numUsers); /*go to start menu and get user option*/
+    
+     /*will loop until a valid input is added*/
     char input = 'a';
     while (input != '0') {
         
@@ -60,7 +30,7 @@ int main(void) {
             /*waiting till each function is finished to connect them.*/
             case ('1'):
             {
-                userMenu(linkList, p ,debugFlag, numUsers);
+                p=userMenu(linkList, p ,&debugFlag, numUsers);
                 break;
             }
             case ('2'):
@@ -98,35 +68,55 @@ int main(void) {
     
     return 0;
     
-    
-    return 0;
-}
-/* Used to create a new user from the accountMenu*/
-void userMenu(node_t linkList, node_t p, int debugFlag, int *numUsers) {
-    char input;
-    
-    
-    printf("1. Login\n"
-           "2. Create User Account\n");
-    
-    printf("Option: ");
-    scanf(" %c", &input);
-    
-    
-    switch(input){
-        case('1') : {
-            p = login(linkList, p, debugFlag);
-            break;
-        }
-        case('2') : {
-            p = newUser(linkList, numUsers, p, debugFlag);
-            while (addNewAccount(linkList, p, debugFlag) == 0);
-            break;
-        }
-            printf("Please enter a valid option\n");
     }
-}
+/* Used to create a new user from the accountMenu*/
+node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
+    char input;
+   
+    
+    while ((input != '1') && (input != '2')) {
+        printf("1. Login\n"
+               "2. Create User Account\n"
+               "3. Exit\n");
+        
+        printf("Option: ");
+        scanf(" %c", &input);
+        
+        
+        switch (input) {
+            case ('1') : {
+                printf("user:::%s",linkList->nextp->user.username);
+                 p=login(linkList, p,  *debugFlag);
+                if (*debugFlag == 1) /*debug*/
+                    printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
+                break;
+            }
+            case ('2') : {
+                p = newUser(linkList, numUsers, p, *debugFlag);
+                while (addNewAccount(linkList, p, *debugFlag) == 0);
+                break;
+            }
+            case ('3'):
+                exit(0);
+            case ('d'): /*toggles debug mode on or off*/
+            case ('D'): {
+                if (*debugFlag == 0) {
+                    *debugFlag = 1; /*on*/
+                    printf("\nDEBUG mode: on\n");
+                } else if (*debugFlag == 1) {
+                    *debugFlag = 0; /*off*/
+                    printf("\nDEBUG mode: off\n");
+                }
+            }
+            default:
+                printf("Please enter a valid option\n");
+                if (*debugFlag == 1)
+                    printf("\nDEBUG: input_s =%c\n", input);
+        }
+    }
 
+return p;
+}
 char startMenu() {
     char input;
     
@@ -165,12 +155,17 @@ char startMenu() {
  }
 }
  */
-node_t login(node_t linkList, node_t p, int debugFlag) {
+node_t login(node_t linkList,node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
+    int found=0;
+    node_t i;
+    i= malloc((sizeof(node_t)*1));
     
+    p=NULL;
+    free(p);
     
-    
+    printf("user:::%s",linkList->nextp->user.username);
     /* ask for username and password*/
     printf("Username: ");
     scanf("%s", userlogin);
@@ -184,25 +179,39 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
     /* use a pointer to traverse the linkedlist*/
     
     /*traverse linkedlist*/
-    for (p = linkList; p != NULL; p = p->nextp) {
+    for (i = linkList->nextp; i!=NULL; i = i->nextp) {
         /*compare usernames to information*/
         if (debugFlag == 1) /*debug*/
             printf("\nDEBUG: \n"
                    "current p->user.username =%s\n"
-                   "current p->user.password =%s\n", p->user.username, p->user.password_1);
-        if (strcmp(p->user.username, userlogin) == 0) {
+                   "current p->user.password =%s\n", i->user.username,
+                   i->user.password_1);
+        if (strcmp(i->user.username, userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(p->user.password_1, userpass) == 0) {
-                printf("Welcome, %s", p->user.username);
+            if (strcmp(i->user.password_1, userpass) == 0) {
+                printf("Welcome, %s",i->user.username);
+                found = 1;
+               
+                break;
                 /* go to accountmenu and pass userID*/
             } else printf("Wrong Password");
-        } else {
-            printf("Sorry this username doesn't exist in the system\n");
-            login(linkList, p, debugFlag);
+        
         }
     }
-    return p;
+        if(found==0)
+    {
+            printf("Sorry this username doesn't exist in the system\n");
+            login(linkList, p, debugFlag);
+    }
+    if (debugFlag == 1) /*debug*/
+        printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
+   
+    return i;
 }
+    
+    
+
+
 
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     ++(*numUsers);
@@ -704,8 +713,8 @@ int writeFileV3(const node_t linkList, int* numUsers) {
                 file.account[j].availableFlag);
     }
     
-    f
-    fclose(p);
+    
+    /*fclose(p);*/
     return 1;
 }
 
