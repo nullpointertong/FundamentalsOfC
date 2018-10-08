@@ -60,29 +60,25 @@ int main(void) {
                 /*waiting till each function is finished to connect them.*/
             case ('1'):
             {
-                while (addNewAccount(linkList, p, debugFlag) == 0);
+                userMenu(linkList, p ,debugFlag, numUsers);
                 break;
             }
             case ('2'):
-                printf("DeleteAccount");
+                while (addNewAccount(linkList, p, debugFlag) == 0);
                 break;
 
             case ('3'):
-                TransferMoney(p, linkList, debugFlag);
-                break;
-
-            case ('4'):
             {
                 listAccounts(p);
                 break;
             }
-            case ('5'):
-                userMenu(linkList, p ,debugFlag, numUsers);
+            case ('4'):
+                TransferMoney(p, linkList, debugFlag);
                 break;
-            case ('6'):
+            case ('5'):
                 withdrawMoney(p, linkList, debugFlag);
                 break;
-            case ('7'):
+            case ('6'):
                 depositMoney(p, linkList, debugFlag);
                 break;
             case ('0'):
@@ -93,7 +89,7 @@ int main(void) {
             }
             default:
             {
-                printf("Please enter an option 1-7 or quit with 0\n");
+                printf("Please enter an option 1-6 or quit with 0\n");
                 if (debugFlag == 1)
                     printf("\n\nDEBUG: input =%c\n", input); /*debug*/
             }
@@ -112,7 +108,7 @@ void userMenu(node_t linkList, node_t p, int debugFlag, int *numUsers) {
 
 
     printf("1. Login\n"
-            "2. Create Account\n");
+            "2. Create User Account\n");
 
     printf("Option: ");
     scanf(" %c", &input);
@@ -137,7 +133,7 @@ char startMenu() {
 
 
     printf("1. Login\n"
-            "2. Create Account\n");
+            "2. Create User Account\n");
 
     printf("Option: ");
     scanf(" %c", &input);
@@ -323,13 +319,12 @@ char accountMenu() {
             "                        $$$$$$$$$$$$$$\n"
             "                              $$\n");
      */
-    printf("\n1. Add Account\n"
-            "2. Delete Account\n"
-            "3. Transfer Between Accounts\n"
-            "4. List Accounts\n"
-            "5. Add New User\n" /* new user*/
-            "6. Withdraw Money\n"
-            "7. Deposit Money\n"
+    printf("\n1. User Menu\n"
+            "2. Add Account\n"
+            "3. List Accounts\n"
+            "4. Transfer Between Accounts\n" /* new user*/
+            "5. Withdraw Money\n"
+            "6. Deposit Money\n"
             "0. exit\n");
 
     printf("Option: ");
