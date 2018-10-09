@@ -7,16 +7,16 @@
 int main(void) {
     
     node_t linkList;
-    linkList = malloc(sizeof (node_t)); /*initialise the linkList*/
+    linkList = malloc( sizeof (node_t)); /*initialise the linkList*/
     /*printf("enter shite >");
     
     scanf("%s", linkList->user.password);
     
     printf("%s", linkList->user.password);*/
     int *numUsers;
-    numUsers = malloc(sizeof (int)*1); /*initialise numUsers*/
+    numUsers = malloc( sizeof (int)*1); /*initialise numUsers*/
     node_t p;
-    p=malloc(sizeof (node_t)*1);
+    p=malloc( sizeof (node_t)*1);
     int debugFlag = 0;
    p= userMenu(linkList, p, &debugFlag, numUsers); /*go to start menu and get user option*/
     
@@ -53,7 +53,13 @@ int main(void) {
                 break;
             case ('0'):
             {
-                writeFileV3(linkList, numUsers);
+                int loop=0;
+                linkList=linkList->nextp;
+                while (linkList!=NULL) {
+                    ++loop;
+                    writeFileV3(linkList->user, numUsers, loop);
+                    linkList=linkList->nextp;
+                }
                 exit(0);
             }
             default:
@@ -147,7 +153,9 @@ char startMenu() {
          login(linkList);
          break;
      }
-     case('2') : {
+     case('2') : {    fetch = <refspec>
+
+
          newUser(linkList, numUsers);
          break;
      }
@@ -159,11 +167,8 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
     int found=0;
-    node_t i;
-    i= malloc((sizeof(node_t)*1));
     
     p=NULL;
-    free(p);
     
     printf("user:::%s",linkList->nextp->user.username);
     /* ask for username and password*/
@@ -179,17 +184,17 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     /* use a pointer to traverse the linkedlist*/
     
     /*traverse linkedlist*/
-    for (i = linkList->nextp; i!=NULL; i = i->nextp) {
+    for (p = linkList->nextp; p!=NULL; p = p->nextp) {
         /*compare usernames to information*/
         if (debugFlag == 1) /*debug*/
             printf("\nDEBUG: \n"
                    "current p->user.username =%s\n"
-                   "current p->user.password =%s\n", i->user.username,
-                   i->user.password_1);
-        if (strcmp(i->user.username, userlogin) == 0) {
+                   "current p->user.password =%s\n", p->user.username,
+                   p->user.password_1);
+        if (strcmp(p->user.username, userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(i->user.password_1, userpass) == 0) {
-                printf("Welcome, %s",i->user.username);
+            if (strcmp(p->user.password_1, userpass) == 0) {
+                printf("Welcome, %s",p->user.username);
                 found = 1;
                
                 break;
@@ -206,7 +211,7 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
    
-    return i;
+    return p;
 }
     
     
@@ -215,6 +220,8 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
 
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     ++(*numUsers);
+    p=NULL;
+    
     
     /*sets the next node so that NULL will be the next link*/
     p = linkList;
@@ -222,14 +229,16 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     while (p->nextp != NULL) {
         p = p->nextp;
         
+        
+        
     } /*will stop when p=the last node before NULL*/
     
     /*changes the last node (previous NULL) to another node
      * which points to NULL*/
     
-    node_t newUse;
+    node_t newUse = NULL;
     
-    newUse = malloc(sizeof (node_t));
+    newUse = malloc(sizeof(node_t)*1000);
     
     /*dynamically sets their size*/
     sprintf(newUse->user.userID, "%d", *numUsers);
@@ -398,7 +407,7 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
             char newAccountID[10];
             int currentNum = p->user.numAccounts;
             
-            sprintf(newAccountID, "%s%d", p->user.username, currentNum);
+            sprintf(newAccountID, "%d%d", p->user.numAccounts, currentNum);
             /*creates newAccountID= username+numaccounts*/
             if (debugFlag == 1) /*debug*/
                 printf("\nDEBUG: newAccountID= %s\n", newAccountID);
@@ -697,14 +706,15 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     return 0;
 }
 
-int writeFileV3(const node_t linkList, int* numUsers) {
-    user_t file;
+int writeFileV3(user_t user, int* numUsers, int loop)
+{
    int j;
-    printf("userID=%s ", linkList->nextp->user.username);
-    file = linkList->nextp->user;
-    printf("userID=%s ", file.username);
-    FILE* p;
-    p = fopen("halp.txt", "w");
+   char name[20];
+   user_t file=user;
+   
+   sprintf(name, "Database%d.txt", loop);
+   FILE* p;
+    p = fopen(name, "w");
     fprintf(p, "%d ", *numUsers);
     fprintf(p, "username= %s, password= %s, userID= %s, numAccounts= %d ", file.username, file.password_1, file.userID, file.numAccounts);
     for(j=0;j<5;++j) {
@@ -714,7 +724,7 @@ int writeFileV3(const node_t linkList, int* numUsers) {
     }
     
     
-    /*fclose(p);*/
+    fclose(p);
     return 1;
 }
 
@@ -758,4 +768,3 @@ char * encrypt(char * encryptMessage, char * key)
     }
     return encryped;
 }
-
