@@ -238,8 +238,9 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     
     node_t newUse = NULL;
     
+
     newUse = malloc(sizeof(node_t)*1000);
-    
+   
     /*dynamically sets their size*/
     sprintf(newUse->user.userID, "%d", *numUsers);
     

@@ -56,7 +56,7 @@ void listAccounts(node_t p);
 char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
-int writeFileV3(node_t linkList, int* numUsers);
+int writeFileV3(user_t user, int* numUsers, int loop);
 char * encrypt(char * encryptMessage, char * key);
 /***************************************************/
 #endif
