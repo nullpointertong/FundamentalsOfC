@@ -37,10 +37,10 @@ char *encoding(char str[])
 
     }
 
-    new[j] = '\0';
+    new[j-1] = '\0';
+    printf("%sThis is in encoding", new);
     return new;
 }
-
 char *decoding(char str[])
 {
    char temp[MAX];
@@ -67,6 +67,7 @@ char *decoding(char str[])
         strcat(final, temp);
     }
 
+    final[sizeof(final)] = '\0';
     return final;
 }
 
@@ -80,12 +81,15 @@ void doCompress()
     {
         while(!feof(fp))
         {
-            fgets(temp, 100, fp);
-            char *finished  = encoding(temp);
-            fprintf(fpWrite, "%s\n", finished);
+            if(fgets(temp, sizeof(temp), fp) != NULL && temp[0] != '\0' && temp[0] != '\n')
+            {
+               
+                char *finished  = encoding(temp);
+                fputs(finished, fpWrite);
+            }
         }
 
-    fclose(fp);
+    fclose(fp);	
     fclose(fpWrite);
 
     remove(DATABASE);
@@ -108,9 +112,12 @@ void doDecompress()
     {
         while(!feof(fp))
         {
-            fgets(temp, 100, fp);
-            char *finished  = decoding(temp);
-            fprintf(fpWrite, " %s\n", finished);
+            if(fgets(temp, sizeof(temp), fp) != NULL && temp[0] != '\0' && temp[0] != '\n')
+            {
+               
+                char *finished  = decoding(temp);
+                fputs(finished, fpWrite);
+            }
         }
     fclose(fp);
     fclose(fpWrite);
@@ -130,10 +137,10 @@ void showDatabase()
     FILE *fp = fopen (DATABASE, "r");
     if(fp!=NULL)
     {
-        while(!feof(fp))
+        while(!feof(fp) && fgets(temp, sizeof(temp), fp) != NULL)
         {
-            fgets(temp, 100, fp);
-            printf("%s\n", temp);
+            printf("%s", temp);
+           
         }
     }
 }
@@ -143,17 +150,17 @@ int main()
 {
     printf("\nDatabase before do compression\n");
     showDatabase();
-    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
 
     doCompress();
     printf("\nDatabase after do compression\n");
     showDatabase();
-    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
 
     doDecompress();
     printf("\nDatabase after do decompression\n");
     showDatabase();
-        printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+        printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
 
     return 0;
 
