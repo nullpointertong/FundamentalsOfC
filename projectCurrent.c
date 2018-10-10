@@ -225,9 +225,9 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
 
 
 
-node_t newNode(node_t linkList, node_t p, int *numUsers)
+node_t newNode(node_t linkList, node_t p)
 {
-++(*numUsers);
+
 p=NULL;
 
 
@@ -261,8 +261,10 @@ return p;
 
 
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
-   
-   p=newNode(linkList,p, numUsers);
+    
+    ++(*numUsers);
+    
+   p=newNode(linkList,p);
     /*dynamically sets their size*/
     sprintf(p->user.userID, "%d", *numUsers);
     
@@ -772,7 +774,7 @@ int readFile(node_t linkList, node_t p, int* numUsers)
     
     for(i=0; i<*numUsers; ++i)
     {
-        p=newNode(linkList, p, numUsers);
+        p=newNode(linkList, p);
     
         fscanf(fp, "%s %s %s %d ",
                 p->user.username,
