@@ -55,6 +55,6 @@ void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 int writeFileV3(node_t linkList, int* numUsers);
 int readFile(node_t linkList, node_t p, int* numUsers);
-char * encrypt(char * encryptMessage, char * key);
+char * encrypt(char * encryptMessage, int messageLength, char * key, int keyLength);
 /***************************************************/
 #endif

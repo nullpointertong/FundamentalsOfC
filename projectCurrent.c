@@ -163,9 +163,9 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
                    "current p->user.username =%s\n"
                    "current p->user.password =%s\n", p->user.username,
                    p->user.password_1);
-        if (strcmp(p->user.username, encrypt(userlogin,key)) == 0) {
+        if (strcmp(p->user.username, encrypt(userlogin,4,key,28)) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(p->user.password_1, encrypt(userpass,key)) == 0) {
+            if (strcmp(p->user.password_1, encrypt(userpass,4,key,28)) == 0) {
                 printf("Welcome, %s",p->user.username);
                 found = 1;
                 
@@ -201,7 +201,7 @@ node_t newNode(node_t linkList, node_t p)
     node_t newUse = NULL;
     
 
-    newUse = malloc(sizeof(node_t)*1000);
+    newUse = malloc(sizeof(node_t)*100);
             /*initialise the new node*/
     newUse->nextp = NULL;
             /*set the next node to NULL*/
@@ -639,8 +639,8 @@ int writeFileV3(node_t linkList, int* numUsers)
     for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
     {
         fprintf(fp, "%s %s %s %d ",
-                encrypt(linkList->user.username, key),
-                encrypt(linkList->user.password_1,key),
+                encrypt(linkList->user.username,4, key,28),
+                encrypt(linkList->user.password_1,4,key,28),
                 linkList->user.userID,
                 linkList->user.numAccounts);
         for(j=0;j<linkList->user.numAccounts;++j)
@@ -677,15 +677,15 @@ int readFile(node_t linkList, node_t p, int* numUsers)
         p=newNode(linkList, p);
     
         fscanf(fp, "%s %s %s %d ",
-                encrypt(p->user.username,key),
-                encrypt(p->user.password_1,key),
-                encrypt(p->user.userID,key),
+                encrypt(p->user.username,4,key,28),
+                encrypt(p->user.password_1,4,key,28),
+                p->user.userID,
                 &p->user.numAccounts);
         printf("no");
         for(j=0; j<p->user.numAccounts;++j)
         {
             fscanf(fp, "%s %lf %d ",
-                    encrypt(p->user.account[j].accountID,key),
+                    p->user.account[j].accountID,
                     &p->user.account[j].accountValue,
                     &p->user.account[j].availableFlag);
         }
@@ -716,20 +716,15 @@ void display_hashmap(int *employeeId, map_t hashmap[], int * new_key) {
 }
 
 /* Encrypts using XOR bitwise Operation */
-char * encrypt(char * encryptMessage, char * key)
+char * encrypt(char * encryptMessage, int messageLength, char * key, int keyLength)
 {
-    int messageLength = strlen(encryptMessage);
-    int keyLength = strlen(key);
+   
     char * encryped = malloc(messageLength + 1);
     int i;
     for(i = 0 ; i<=messageLength; i++)
     {
-        if(&encryped[i] != NULL){
-            encryped[i] = encryptMessage[i] ^ key[i % keyLength];
-        }
-        else{
-            encryped[i] = 0;
-        }
+        encryped[i] = encryptMessage[i] ^ key[i % keyLength];
     }
+    encryped[messageLength] = '\0';
     return encryped;
 }
