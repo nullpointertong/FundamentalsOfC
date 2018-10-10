@@ -4,8 +4,22 @@
 #include <string.h>
 #include <math.h>
 
+#define MAX 256
+#define DATABASE "Database.txt"
+#define DATABASETEMP "Database.tmp"
+
 int main(void) {
     
+    doCompress(); /* this line of code need to be remove for the final version */
+
+    FILE *fp = fopen(DATABASE, "r");
+
+    if(fp!=NULL)
+    {
+        doDecompress();
+    }
+    fclose(fp);
+
     node_t linkList;
     linkList = malloc( sizeof (node_t)); /*initialise the linkList*/
     /*printf("enter shite >");
@@ -79,6 +93,15 @@ int main(void) {
         }
     }
     
+
+    FILE *fpTemp = fopen(DATABASE, "r");
+
+    if(fpTemp!=NULL)
+    {
+        doCompress();
+    }
+    fclose(fpTemp);
+
     return 0;
     
 }
@@ -835,4 +858,147 @@ char * encrypt(char * encryptMessage, char * key)
         }
     }
     return encryped;
+}
+
+/*get a string then encoding with Run_Length_Encoding, return a string*/
+char *encoding(char str[])
+{
+    int count;
+    int strLength = strlen(str);
+    char *new = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char finalCount[MAX];
+
+    int i;
+    int j=0;
+    for(i=0; i<strLength; i++)
+    {
+        new[j++] = str[i];/* init the first occureences of a char*/
+        count =1;
+
+        while(str[i] == str[i+1] && i+1<strLength)
+        {
+            count++;
+            i++;
+        }
+
+        sprintf(finalCount, "%d", count);
+
+       
+        int k;
+        for(k=0;*(finalCount+k); k++, j++)
+        {
+            new[j] = finalCount[k];
+        }
+
+    }
+
+    return new;
+}
+
+/*get a string then decoding with Run_Length_Encoding, return a string*/
+char *decoding(char str[])
+{
+   char temp[MAX];
+   char* final = malloc(MAX);
+   char* tempCurrentChar =malloc(sizeof(char)*1);
+   int initdone = 0;
+   
+   int i;
+   for(i=0; i<strlen(str); i=i+2)
+   {
+        int time = str[i+1] - '0';
+        
+        sprintf(tempCurrentChar, "%c", str[i]);
+        strcpy(temp, tempCurrentChar);
+
+        int j; 
+        for(j = 1; j < time; j++)
+        {
+            char tempChar[2];
+            tempChar[0] = str[i];
+            tempChar[1] = '\0';
+            strcat(temp, tempChar);
+        }
+        
+        if(initdone == 1)
+        {
+         strcat(final, temp);
+        }
+        else
+        {
+         strcpy(final, temp);
+         initdone =1;
+        }
+       
+    }
+
+    final[strlen(final)+1] = '\0';
+    
+    return final;
+}
+
+/*Compress  database*/
+void doCompress()
+{
+    char temp[100];
+    FILE *fp = fopen(DATABASE, "r");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    char *finished= malloc(sizeof(char)*1);
+    char space[2];
+    space[0] = ' ';
+    space[1] = '\0';
+    
+    if(fp != NULL)
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp, "%s ", temp);
+               finished   = encoding(temp);
+                fputs(finished, fpWrite);
+                fputs(space, fpWrite);
+            
+        }
+
+    fclose(fp);	
+    fclose(fpWrite);
+
+    remove(DATABASE);
+    rename(DATABASETEMP, DATABASE);
+
+    }
+    else
+    {
+        printf("Cannot find database, please have a check");
+    }
+}
+
+/*Decompress  database*/
+void doDecompress()
+{
+    char temp[100];
+    FILE *fp = fopen(DATABASE, "r");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    char *finished=malloc(sizeof(char)*1);
+        char space[2];
+    space[0] = ' ';
+    space[1] = '\0';
+    if(fp!=NULL)
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp, "%s ", temp);
+                 finished = decoding(temp);
+                fputs(finished, fpWrite);
+                fputs(space, fpWrite);    
+        }
+    fclose(fp);
+    fclose(fpWrite);
+
+    remove(DATABASE);
+    rename(DATABASETEMP, DATABASE);
+    }
+    else
+    {
+        printf("Cannot find database, please have a check");
+    }
 }

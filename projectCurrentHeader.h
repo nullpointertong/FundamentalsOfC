@@ -56,5 +56,11 @@ void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 int writeFileV3(node_t linkList, int* numUsers);
 int readFile(node_t linkList, node_t p, int* numUsers);
 char * encrypt(char * encryptMessage, char * key);
+
+char *encoding(char str[]);
+char *decoding(char str[]);
+void doCompress();
+void doDecompress();
+
 /***************************************************/
 #endif
