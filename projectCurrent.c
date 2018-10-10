@@ -729,27 +729,30 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 int writeFileV3(node_t linkList, int* numUsers)
 {
+	char * key = "we213@!";
     int j;
     FILE* fp;
     fp = fopen("Database.txt", "w");
     if(fp==NULL)
         return 0;
     fprintf(fp, "%d ", *numUsers);
+    /*Dyanmic Key Generation was considered however
+    was left out due to the ram and storage restrictions
+    */ 
     
     for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
     {
         fprintf(fp, "%s %s %s %d ",
-                linkList->user.username,
-                linkList->user.password_1,
-                linkList->user.userID,
+                encrypt(linkList->user.username,key),
+                encrypt(linkList->user.password_1,key),
+                encrypt(linkList->user.userID,key),
                 linkList->user.numAccounts);
         for(j=0;j<linkList->user.numAccounts;++j)
         {
             fprintf(fp, "%s %lf %d ",
-                    linkList->user.account[j].accountID,
+                  encrypt(linkList->user.account[j].accountID,key),
                     linkList->user.account[j].accountValue,
                     linkList->user.account[j].availableFlag);
-        
         }
     
         }
@@ -761,6 +764,7 @@ int writeFileV3(node_t linkList, int* numUsers)
 
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
+	char * key = "we213@!";
     FILE* fp;
     int i, j;
     fp=fopen("Database.txt", "r");
@@ -777,18 +781,17 @@ int readFile(node_t linkList, node_t p, int* numUsers)
         p=newNode(linkList, p);
     
         fscanf(fp, "%s %s %s %d ",
-                p->user.username,
-                p->user.password_1,
-                p->user.userID,
+                encrypt(p->user.username,key),
+                encrypt(p->user.password_1,key),
+                encrypt(p->user.userID,key),
                 &p->user.numAccounts);
         printf("no");
         for(j=0; j<p->user.numAccounts;++j)
         {
             fscanf(fp, "%s %lf %d ",
-                    p->user.account[j].accountID,
+                    encrypt(p->user.account[j].accountID,key),
                     &p->user.account[j].accountValue,
                     &p->user.account[j].availableFlag);
-    
         }
     }
     return 1;
