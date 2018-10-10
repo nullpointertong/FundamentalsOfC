@@ -873,8 +873,9 @@ char *encoding(char str[])
     for(i=0; i<strLength; i++)
     {
         new[j++] = str[i];/* init the first occureences of a char*/
-        count =1;
+        count =1;/*init the count for each occureence*/
 
+        /*if second char is equal to the previous char*/
         while(str[i] == str[i+1] && i+1<strLength)
         {
             count++;
@@ -887,7 +888,7 @@ char *encoding(char str[])
         int k;
         for(k=0;*(finalCount+k); k++, j++)
         {
-            new[j] = finalCount[k];
+            new[j] = finalCount[k]; /*coping each encoded char to new string */
         }
 
     }
@@ -903,6 +904,7 @@ char *decoding(char str[])
    char* tempCurrentChar =malloc(sizeof(char)*1);
    int initdone = 0;
    
+   /*get char first, then get its count*/
    int i;
    for(i=0; i<strlen(str); i=i+2)
    {
@@ -920,6 +922,9 @@ char *decoding(char str[])
             strcat(temp, tempChar);
         }
         
+        /*if use strcat straightly, 
+        it somehow get the garbage memory then insert to final string,
+        so strcpy is necessary for this situation*/
         if(initdone == 1)
         {
          strcat(final, temp);
@@ -953,9 +958,9 @@ void doCompress()
         while(!feof(fp))
         {
             fscanf(fp, "%s ", temp);
-               finished   = encoding(temp);
-                fputs(finished, fpWrite);
-                fputs(space, fpWrite);
+            finished = encoding(temp); /*getting a string from encoding function*/
+            fputs(finished, fpWrite);
+            fputs(space, fpWrite);/*space is needed here for meeting the databse*/
             
         }
 
@@ -979,17 +984,18 @@ void doDecompress()
     FILE *fp = fopen(DATABASE, "r");
     FILE *fpWrite = fopen(DATABASETEMP, "w");
     char *finished=malloc(sizeof(char)*1);
-        char space[2];
+    char space[2];
     space[0] = ' ';
     space[1] = '\0';
+
     if(fp!=NULL)
     {
         while(!feof(fp))
         {
             fscanf(fp, "%s ", temp);
-                 finished = decoding(temp);
-                fputs(finished, fpWrite);
-                fputs(space, fpWrite);    
+            finished = decoding(temp); /*getting a string from decoding function*/
+            fputs(finished, fpWrite);
+            fputs(space, fpWrite); /*space is needed here for meeting the databse*/
         }
     fclose(fp);
     fclose(fpWrite);
