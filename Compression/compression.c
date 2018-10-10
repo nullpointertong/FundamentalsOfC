@@ -37,8 +37,6 @@ char *encoding(char str[])
 
     }
 
-    new[j-1] = '\0';
-    printf("%sThis is in encoding", new);
     return new;
 }
 char *decoding(char str[])
@@ -46,6 +44,7 @@ char *decoding(char str[])
    char temp[MAX];
    char* final = malloc(MAX);
    char* tempCurrentChar =malloc(sizeof(char)*1);
+   int initdone = 0;
    
    int i;
    for(i=0; i<strlen(str); i=i+2)
@@ -61,13 +60,26 @@ char *decoding(char str[])
             char tempChar[2];
             tempChar[0] = str[i];
             tempChar[1] = '\0';
-
             strcat(temp, tempChar);
         }
-        strcat(final, temp);
+        
+        if(initdone == 1)
+        {
+         strcat(final, temp);
+        }
+        else
+        {
+         strcpy(final, temp);
+         initdone =1;
+        }
+        
+        printf("\nfinal keep tracking: \n%s\n", final);
     }
 
-    final[sizeof(final)] = '\0';
+    final[strlen(final)+1] = '\0';
+    
+    printf("final in final: \n%s\n", final);
+    
     return final;
 }
 
@@ -77,16 +89,20 @@ void doCompress()
     char temp[100];
     FILE *fp = fopen(DATABASE, "r");
     FILE *fpWrite = fopen(DATABASETEMP, "w");
+    char *finished= malloc(sizeof(char)*1);
+    char space[2];
+    space[0] = ' ';
+    space[1] = '\0';
+    
     if(fp != NULL)
     {
         while(!feof(fp))
         {
-            if(fgets(temp, sizeof(temp), fp) != NULL && temp[0] != '\0' && temp[0] != '\n')
-            {
-               
-                char *finished  = encoding(temp);
+            fscanf(fp, "%s ", temp);
+               finished   = encoding(temp);
                 fputs(finished, fpWrite);
-            }
+                fputs(space, fpWrite);
+            
         }
 
     fclose(fp);	
@@ -108,16 +124,18 @@ void doDecompress()
     char temp[100];
     FILE *fp = fopen(DATABASE, "r");
     FILE *fpWrite = fopen(DATABASETEMP, "w");
+    char *finished=malloc(sizeof(char)*1);
+        char space[2];
+    space[0] = ' ';
+    space[1] = '\0';
     if(fp!=NULL)
     {
         while(!feof(fp))
         {
-            if(fgets(temp, sizeof(temp), fp) != NULL && temp[0] != '\0' && temp[0] != '\n')
-            {
-               
-                char *finished  = decoding(temp);
+            fscanf(fp, "%s ", temp);
+                 finished = decoding(temp);
                 fputs(finished, fpWrite);
-            }
+                fputs(space, fpWrite);    
         }
     fclose(fp);
     fclose(fpWrite);
@@ -137,8 +155,9 @@ void showDatabase()
     FILE *fp = fopen (DATABASE, "r");
     if(fp!=NULL)
     {
-        while(!feof(fp) && fgets(temp, sizeof(temp), fp) != NULL)
+        while(!feof(fp))
         {
+        fgets(temp, MAX, fp);
             printf("%s", temp);
            
         }
@@ -150,17 +169,15 @@ int main()
 {
     printf("\nDatabase before do compression\n");
     showDatabase();
-    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
 
     doCompress();
     printf("\nDatabase after do compression\n");
     showDatabase();
-    printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
+   
 
     doDecompress();
     printf("\nDatabase after do decompression\n");
     showDatabase();
-        printf("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\n");
 
     return 0;
 
