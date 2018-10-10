@@ -111,6 +111,7 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
                 break;
             }
             case ('3'):
+                writeFileV3(linkList, numUsers);
                 exit(0); /*end*/
                 
             case ('d'): /*toggles debug mode on or off*/
@@ -137,7 +138,7 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
     int found=0;
-    char * key = "12#$";
+    char * key = "waddwdwaadwdwa232qwddawdwawda@#";
     p=NULL;
     printf("user:::%s",linkList->nextp->user.username);
     /* ask for username and password*/
@@ -624,7 +625,7 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 int writeFileV3(node_t linkList, int* numUsers)
 {
-    char * key = "12#$";
+    char * key = "waddwdwaadwdwa232qwddawdwawda@#";
     int j;
     FILE* fp;
     fp = fopen("Database.txt", "w");
@@ -659,7 +660,7 @@ int writeFileV3(node_t linkList, int* numUsers)
 
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
-	char * key = "dwawd1dwa12#$";
+	char * key = "waddwdwaadwdwa232qwddawdwawda@#";
     FILE* fp;
     int i, j;
     fp=fopen("Database.txt", "r");
