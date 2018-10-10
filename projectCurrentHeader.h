@@ -46,7 +46,7 @@ void TransferMoney(node_t p, node_t linkList, int debugFlag);
 node_t PayUser(node_t p, node_t linkList);
 void withdrawMoney(node_t p, node_t linkList, int debugFlag);
 int depositMoney(node_t p, node_t linkList, int debugFlag);
-node_t newNode(node_t linkList, node_t p, int *numUsers);
+node_t newNode(node_t linkList, node_t p);
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag);
 int writeFile(node_t p, int* numUsers);
 void deleteAccount(node_t p);
