@@ -729,7 +729,7 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 int writeFileV3(node_t linkList, int* numUsers)
 {
-	char * key = "we213@!";
+	char * key = "dwawd1dwa12#$";
     int j;
     FILE* fp;
     fp = fopen("Database.txt", "w");
@@ -764,7 +764,7 @@ int writeFileV3(node_t linkList, int* numUsers)
 
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
-	char * key = "we213@!";
+	char * key = "dwawd1dwa12#$";
     FILE* fp;
     int i, j;
     fp=fopen("Database.txt", "r");
