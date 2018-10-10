@@ -134,47 +134,43 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
 }
 
 node_t login(node_t linkList,node_t p, int debugFlag) {
-    char userlogin[15]; /*initialise temp*/
-    char userpass[15];  /*initialise temp*/
-    int found=0; /*used as a flag*/
-    
-    p=NULL;      /*assigns p to nothing, so that it can be reassigned*/
-    
-                 /*gets username and password*/
+    char userlogin[15];
+    char userpass[15];
+    int found=0;
+    char * key = "12#$";
+    p=NULL;
+    printf("user:::%s",linkList->nextp->user.username);
+    /* ask for username and password*/
     printf("Username: ");
     scanf("%s", userlogin);
     
     printf("Password: ");
     scanf("%s", userpass);
     
-    if (debugFlag == 1) /*debug*/
-        printf("\nDEBUG: \nuserlogin =%s\nuserpass= %s \n",userlogin, userpass);
-        
+    printf("USERNAME =     ");
     
-        
+    if (debugFlag == 1) /*debug*/
+        printf("\nDEBUG: \nuserlogin =%s\nuserpass= %s \n", userlogin, userpass);
+    
+    /* use a pointer to traverse the linkedlist*/
+    
+    /*traverse linkedlist*/
     for (p = linkList->nextp; p!=NULL; p = p->nextp) {
-                               /*traverse linkedlist*/
-        
+        /*compare usernames to information*/
         if (debugFlag == 1) /*debug*/
             printf("\nDEBUG: \n"
                    "current p->user.username =%s\n"
                    "current p->user.password =%s\n", p->user.username,
                    p->user.password_1);
-        
-            if (strcmp(p->user.username, userlogin) == 0) {
-                              /*compare usernames to information*/
-                
-            
-            if (strcmp(p->user.password_1, userpass) == 0) {
-                              /*compare passwords to password entered*/
+        if (strcmp(p->user.username, encrypt(userlogin,key)) == 0) {
+            /* compare passwords to password entered*/
+            if (strcmp(p->user.password_1, encrypt(userpass,key)) == 0) {
                 printf("Welcome, %s",p->user.username);
                 found = 1;
                 
-                break; /*ends for loop where p points to user
-                        * if username and password are correct*/
-                
+                break;
+                /* go to accountmenu and pass userID*/
             } else printf("Wrong Password");
-                       /*if password wrong*/
             
         }
     }
@@ -182,14 +178,11 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     {
         printf("Sorry this username doesn't exist in the system\n");
         login(linkList, p, debugFlag);
-        /*username and password wrong*/
     }
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
-    
-    return p; /*p will point to user*/
+    return p;
 }
-
 
 node_t newNode(node_t linkList, node_t p)
 {
@@ -631,7 +624,7 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 int writeFileV3(node_t linkList, int* numUsers)
 {
-	char * key = "dwawd1dwa12#$";
+    char * key = "12#$";
     int j;
     FILE* fp;
     fp = fopen("Database.txt", "w");
@@ -645,24 +638,24 @@ int writeFileV3(node_t linkList, int* numUsers)
     for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
     {
         fprintf(fp, "%s %s %s %d ",
-                encrypt(linkList->user.username,key),
+                encrypt(linkList->user.username, key),
                 encrypt(linkList->user.password_1,key),
-                encrypt(linkList->user.userID,key),
+                linkList->user.userID,
                 linkList->user.numAccounts);
         for(j=0;j<linkList->user.numAccounts;++j)
         {
             fprintf(fp, "%s %lf %d ",
-                  encrypt(linkList->user.account[j].accountID,key),
+                    linkList->user.account[j].accountID,
                     linkList->user.account[j].accountValue,
                     linkList->user.account[j].availableFlag);
         }
-    
         }
     
     
     fclose(fp);
     return 1;
 }
+
 
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
