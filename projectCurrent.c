@@ -13,14 +13,24 @@ int main(void) {
     scanf("%s", linkList->user.password);
     
     printf("%s", linkList->user.password);*/
-    int *numUsers;
+    int *numUsers=0;
     numUsers = malloc( sizeof (int)*1); /*initialise numUsers*/
     node_t p;
     p=malloc( sizeof (node_t)*1);
     int debugFlag = 0;
-   p= userMenu(linkList, p, &debugFlag, numUsers); /*go to start menu and get user option*/
+    printf("yes");
     
-     /*will loop until a valid input is added*/
+    
+    
+    if(readFile(linkList, p, numUsers)==0)
+    {
+        printf("Error: Data was unable to load\n");
+    }
+    
+    
+    p= userMenu(linkList, p, &debugFlag, numUsers); /*go to start menu and get user option*/
+    
+    /*will loop until a valid input is added*/
     char input = 'a';
     while (input != '0') {
         
@@ -53,13 +63,10 @@ int main(void) {
                 break;
             case ('0'):
             {
-                int loop=0;
-                linkList=linkList->nextp;
-                while (linkList!=NULL) {
-                    ++loop;
-                    writeFileV3(linkList->user, numUsers, loop);
-                    linkList=linkList->nextp;
-                }
+                
+                    if(writeFileV3(linkList, numUsers)==0)
+                        printf("write failure");
+                
                 exit(0);
             }
             default:
@@ -74,11 +81,11 @@ int main(void) {
     
     return 0;
     
-    }
+}
 /* Used to create a new user from the accountMenu*/
 node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
     char input;
-   
+    
     
     while ((input != '1') && (input != '2')) {
         printf("1. Login\n"
@@ -92,7 +99,7 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
         switch (input) {
             case ('1') : {
                 printf("user:::%s",linkList->nextp->user.username);
-                 p=login(linkList, p,  *debugFlag);
+                p=login(linkList, p,  *debugFlag);
                 if (*debugFlag == 1) /*debug*/
                     printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
                 break;
@@ -120,8 +127,8 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
                     printf("\nDEBUG: input_s =%c\n", input);
         }
     }
-
-return p;
+    
+    return p;
 }
 char startMenu() {
     char input;
@@ -196,76 +203,87 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
             if (strcmp(p->user.password_1, userpass) == 0) {
                 printf("Welcome, %s",p->user.username);
                 found = 1;
-               
+                
                 break;
                 /* go to accountmenu and pass userID*/
             } else printf("Wrong Password");
-        
+            
         }
     }
-        if(found==0)
+    if(found==0)
     {
-            printf("Sorry this username doesn't exist in the system\n");
-            login(linkList, p, debugFlag);
+        printf("Sorry this username doesn't exist in the system\n");
+        login(linkList, p, debugFlag);
     }
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
-   
+    
     return p;
 }
-    
-    
 
+
+
+
+
+node_t newNode(node_t linkList, node_t p, int *numUsers)
+{
+++(*numUsers);
+p=NULL;
+
+
+/*sets the next node so that NULL will be the next link*/
+p = linkList;
+/*p used to traverse the linklist*/
+while (p->nextp != NULL) {
+p = p->nextp;
+
+
+
+} /*will stop when p=the last node before NULL*/
+
+/*changes the last node (previous NULL) to another node
+ * which points to NULL*/
+
+node_t newUse = NULL;
+
+
+newUse = malloc(sizeof(node_t)*1000);
+
+newUse->nextp = NULL;
+
+p->nextp = newUse;
+
+p = p->nextp;
+
+return p;
+
+}
 
 
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
-    ++(*numUsers);
-    p=NULL;
-    
-    
-    /*sets the next node so that NULL will be the next link*/
-    p = linkList;
-    /*p used to traverse the linklist*/
-    while (p->nextp != NULL) {
-        p = p->nextp;
-        
-        
-        
-    } /*will stop when p=the last node before NULL*/
-    
-    /*changes the last node (previous NULL) to another node
-     * which points to NULL*/
-    
-    node_t newUse = NULL;
-    
-
-    newUse = malloc(sizeof(node_t)*1000);
    
+   p=newNode(linkList,p, numUsers);
     /*dynamically sets their size*/
-    sprintf(newUse->user.userID, "%d", *numUsers);
+    sprintf(p->user.userID, "%d", *numUsers);
     
     /*will set the User ID to the number of users in
      * the system (including itself) with the leasing
      * digits being zeros*/
     
     printf("Enter Your Username> \n");
-    scanf("%s", newUse->user.username);
+    scanf("%s", p->user.username);
     printf("Enter Your Password> \n");
-    scanf("%s", newUse->user.password_1);
+    scanf("%s", p->user.password_1);
     printf("Welcome to Richard and Co Bank!!\n");
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \n"
-               "newUse->user.username= %s\n"
-               "newUse p->user.password= %s\n", newUse->user.username,
-               newUse->user.password_1);
+               "p->user.username= %s\n"
+               "p->user.password= %s\n", p->user.username,
+               p->user.password_1);
     
-    newUse->user.numAccounts = 0;
+    p->user.numAccounts = 0;
     
-    newUse->nextp = NULL;
-    
-    p->nextp = newUse;
-    
-    p = p->nextp;
+   
     
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \n"
@@ -707,28 +725,72 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     return 0;
 }
 
-int writeFileV3(user_t user, int* numUsers, int loop)
+int writeFileV3(node_t linkList, int* numUsers)
 {
-   int j;
-   char name[20];
-   user_t file=user;
-   
-   sprintf(name, "Database%d.txt", loop);
-   FILE* p;
-    p = fopen(name, "w");
-    fprintf(p, "%d ", *numUsers);
-    fprintf(p, "username= %s, password= %s, userID= %s, numAccounts= %d ", file.username, file.password_1, file.userID, file.numAccounts);
-    for(j=0;j<5;++j) {
-        fprintf(p, "accountID= %s, accountValue= %lf, accountFlag= %d ",
-                file.account[j].accountID, file.account[j].accountValue,
-                file.account[j].availableFlag);
-    }
+    int j;
+    FILE* fp;
+    fp = fopen("Database.txt", "w");
+    if(fp==NULL)
+        return 0;
+    fprintf(fp, "%d ", *numUsers);
+    
+    for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
+    {
+        fprintf(fp, "%s %s %s %d ",
+                linkList->user.username,
+                linkList->user.password_1,
+                linkList->user.userID,
+                linkList->user.numAccounts);
+        for(j=0;j<linkList->user.numAccounts;++j)
+        {
+            fprintf(fp, "%s %lf %d ",
+                    linkList->user.account[j].accountID,
+                    linkList->user.account[j].accountValue,
+                    linkList->user.account[j].availableFlag);
+        
+        }
+    
+        }
     
     
-    fclose(p);
+    fclose(fp);
     return 1;
 }
 
+int readFile(node_t linkList, node_t p, int* numUsers)
+{
+    FILE* fp;
+    int i, j;
+    fp=fopen("Database.txt", "r");
+    
+    if(fp==NULL)
+    {
+        return 0;
+    }
+    printf("maybe");
+    fscanf(fp, "%d ", numUsers);
+    
+    for(i=0; i<*numUsers; ++i)
+    {
+        p=newNode(linkList, p, numUsers);
+    
+        fscanf(fp, "%s %s %s %d ",
+                p->user.username,
+                p->user.password_1,
+                p->user.userID,
+                &p->user.numAccounts);
+        printf("no");
+        for(j=0; j<p->user.numAccounts;++j)
+        {
+            fscanf(fp, "%s %lf %d ",
+                    p->user.account[j].accountID,
+                    &p->user.account[j].accountValue,
+                    &p->user.account[j].availableFlag);
+    
+        }
+    }
+    return 1;
+}
 void insert_hashmap(int *employeeId, map_t hashmap[], int *new_key) {
     /*Please Note Hashmap is implmented in the form h(K) = KmodN where
     N is number of elements in array and K is key*/
