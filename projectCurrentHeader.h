@@ -46,9 +46,9 @@ void TransferMoney(node_t p, node_t linkList, int debugFlag);
 node_t PayUser(node_t p, node_t linkList);
 void withdrawMoney(node_t p, node_t linkList, int debugFlag);
 int depositMoney(node_t p, node_t linkList, int debugFlag);
+node_t newNode(node_t linkList, node_t p, int *numUsers);
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag);
 int writeFile(node_t p, int* numUsers);
-node_t readFile();
 void deleteAccount(node_t p);
 char startMenu();
 node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers);
@@ -56,7 +56,8 @@ void listAccounts(node_t p);
 char miniMenu(char name[], node_t p, node_t linkList);
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
-int writeFileV3(user_t user, int* numUsers, int loop);
+int writeFileV3(node_t linkList, int* numUsers);
+int readFile(node_t linkList, node_t p, int* numUsers);
 char * encrypt(char * encryptMessage, char * key);
 /***************************************************/
 #endif
