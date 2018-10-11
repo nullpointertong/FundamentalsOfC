@@ -8,6 +8,17 @@
 #define DATABASE "Database.txt"
 #define DATABASETEMP "Database.tmp"
 
+/*******************************************************************************
+ * Main:
+ * This function starts by printing the menu for the users to navigate through
+ * the program. It also initializes the linked list, the data type that is used
+ * to hold user information.
+ * Inputs:
+ * NONE
+ * Outputs:
+ * node_t linkedList : head for the linkedlist p
+ * node_t p : linked list used to hold user info throughout the program.
+*******************************************************************************/
 int main(void) {
 
     node_t linkList;
@@ -86,7 +97,18 @@ int main(void) {
     return 0;
     
 }
-/* Used to create a new user from the accountMenu*/
+/*******************************************************************************
+ * This function, called by the main displays an option for the user to create 
+ * an user account or to login with existing details.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int *debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * - int *numUsers : a pointer used to store the number of users created.
+ * outputs:
+ * - node_t p : updates p if a new user is created.
+*******************************************************************************/
 node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
     char input;
     
@@ -134,6 +156,8 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
     
     return p;
 }
+
+/* I dont think we use this function */
 char startMenu() {
     char input;
     
@@ -159,8 +183,18 @@ char startMenu() {
     return input;
 }
 
-
-node_t login(node_t linkList,node_t p, int debugFlag) {
+/*******************************************************************************
+ * This function lets the user login to the program. In so doing p now contains
+ * the users information.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : updates p if a new user is created.
+*******************************************************************************/
+node_t login(node_t linkList, node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
     int found=0;
