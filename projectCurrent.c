@@ -177,32 +177,6 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
     return p;
 }
 
-/* I dont think we use this function */
-char startMenu() {
-    char input;
-    
-    
-    printf("1. Login\n"
-           "2. Create User Account\n");
-    
-    printf("Option: ");
-    scanf(" %c", &input);
-    
-    
-    switch(input){
-        case('1') : {
-            return input;
-            break;
-        }
-        case('2') : {
-            return input;
-            break;
-        }
-            printf("Please enter a valid option\n");
-    }
-    return input;
-}
-
 /*******************************************************************************
  * This function lets the user login to the program. In so doing p now contains
  * the users information.
