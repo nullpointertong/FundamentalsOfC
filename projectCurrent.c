@@ -10,15 +10,16 @@
 
 int main(void) {
     
-    doCompress(); /* this line of code need to be remove for the final version */
 
     FILE *fp = fopen(DATABASE, "r");
-
-    if(fp!=NULL)
+    if(fp==NULL)
+    {
+    }
+    else
     {
         doDecompress();
     }
-    fclose(fp);
+
 
     node_t linkList;
     linkList = malloc( sizeof (node_t)); /*initialise the linkList*/
