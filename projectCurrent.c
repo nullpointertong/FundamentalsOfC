@@ -1,9 +1,14 @@
+/*******************************************************************************
+ * List header files:
+*******************************************************************************/
 #include "projectCurrentHeader.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> /*malloc,exit */
 #include <string.h>
-#include <math.h>
 
+/*******************************************************************************
+ * List preprocessing directives:
+*******************************************************************************/
 #define MAX 256
 #define DATABASE "Database.txt"
 #define DATABASETEMP "Database.tmp"
@@ -98,12 +103,12 @@ int main(void) {
         }
     }
     
-    return 0;
-    
+    return 0; 
 }
+
 /*******************************************************************************
  * This function, called by the main displays an option for the user to create 
- * an user account or to login with existing details.
+ * a user account or to login with existing details.
  * inputs:
  * - node_t linkedList : head of our linkedlist used to store user info.
  * - node_t p : The actual linkedlist used to store info.
@@ -112,6 +117,9 @@ int main(void) {
  * - int *numUsers : a pointer used to store the number of users created.
  * outputs:
  * - node_t p : updates p if a new user is created.
+ * - p->user.username : username of the user.
+ * - p->user.password_1 : password of the user.
+ * - int *debugFlag : used to signify to go into debug mode or not.
 *******************************************************************************/
 node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
     char input;
@@ -262,36 +270,28 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
 node_t newNode(node_t linkList, node_t p)
 {
 
-p=NULL;
+    p=NULL;
 
 
-/*sets the next node so that NULL will be the next link*/
-p = linkList;
-/*p used to traverse the linklist*/
-while (p->nextp != NULL) {
-p = p->nextp;
+    /*sets the next node so that NULL will be the next link*/
+    p = linkList;
+    /*p used to traverse the linklist*/
+        while (p->nextp != NULL) 
+            {
+            p = p->nextp;
+            } /*will stop when p=the last node before NULL*/
 
+    /*changes the last node (previous NULL) to another node
+    * which points to NULL*/
 
-
-} /*will stop when p=the last node before NULL*/
-
-/*changes the last node (previous NULL) to another node
- * which points to NULL*/
-
-node_t newUse = NULL;
-
-
-newUse = malloc(sizeof(node_t)*1000);
-
-newUse->nextp = NULL;
-
-p->nextp = newUse;
-
-p = p->nextp;
-
-return p;
-
+    node_t newUse = NULL;
+    newUse = malloc(sizeof(node_t)*1000);
+    newUse->nextp = NULL;
+    p->nextp = newUse;
+    p = p->nextp;
+    return p;
 }
+
 /*******************************************************************************
  * This function lets the user create a new user. In so doing this function,
  * creates a new node in p and updates p with the username and password for
@@ -400,17 +400,20 @@ char accountMenu() {
  *   debug mode or not.
  * outputs:
  * - node_t p : updates p with a new bank account.
+ * - p->user.numAccounts : adds one if a new account is made
+ * - p->user.account[currentNum].accountID : Initializes the new Account ID
+ * - p->user.account[currentNum].accountValue : Initializes the amount of money
+ *   int the users new account.
+ * - p->user.account[currentNum].availableFlag : Sets a flag so the account can
+     be accessed.
 *******************************************************************************/
 int addNewAccount(node_t linkList, node_t p, int debugFlag) {
-    /*char* currentID = userID;
-    printf("Your user ID is %s", currentID);
-     */
+    
     char garbage;
     garbage = getchar();
     if (garbage);
     
     char action;
-    
     
     printf("Do you wannt to add a new account,please enter 'y' or 'n' for next processing\n");
     scanf("%c", &action);
@@ -460,7 +463,6 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
     } else if (action != 'n' || action != 'N') {
         printf("Please enter valid input\n");
     }
-    
     return 0;
 }
 
@@ -474,6 +476,10 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
  * outputs:
  * - node_t p : Updates p with the new information of the funds of the his/her 
  *   bank account.
+ * - p->user.account[j].accountValue : Decreases the account money was 
+ *   transfered from.
+ * - p->user.account[k].accountValue : Increases the account money was 
+ *   transfered to.
 *******************************************************************************/
 void TransferMoney(node_t p, node_t linkList, int debugFlag) {
     /*Transfer money from one account into another account*/
@@ -531,12 +537,8 @@ void TransferMoney(node_t p, node_t linkList, int debugFlag) {
                                "p->user.account[k].accountID= %s\n"
                                "p->user.account[k].accountValue= %.2lf\n",
                                p->user.account[k].accountID,
-                               p->user.account[k].accountValue);
-                    
-                    
-                    
-                }
-                
+                               p->user.account[k].accountValue);                                                           
+                }                
             }
         } else if (((strcmp(p->user.account[j].accountID, accountID2) || (strcmp(p->user.account[j].accountID, accountID1))) != 0 && once == 0)) {
             printf("Transfer unsuccessful, please check you have the right account\n");
@@ -584,6 +586,8 @@ void listAccounts(node_t p) {
  * outputs:
  * - node_t p : Updates p with the new information of the funds of the his/her 
  *   bank account.
+ * - p->user.account[j].accountValue : Decreases the amount of money withdrawn
+     from the account.
 *******************************************************************************/
 void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
     
@@ -635,10 +639,8 @@ void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
         }
         if (j == 5 && found == 0) {
             printf("Sorry the account your trying to"
-                   " withdraw from doesn't exist\n");
-            
-        }
-        
+                   " withdraw from doesn't exist\n");            
+        }        
     }
 }
 /*******************************************************************************
@@ -651,6 +653,8 @@ void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
  * outputs:
  * - node_t p : Updates p with the new information of the funds of the his/her 
  *   bank account.
+ * - p->user.account[j].accountValue : Increases the amount of money in the 
+     account funds were transfered to.
 *******************************************************************************/
 int depositMoney(node_t p, node_t linkList, int debugFlag) {
     
@@ -659,8 +663,6 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     int found = 0; /* used to match when searching accounts*/
     
     
-    /*  if((miniMenu("Deposit Money", p, linkList) == '1'))
-      {
            clean stdin to prevent overflow*/
     char garbage;
     garbage = getchar();
@@ -748,10 +750,7 @@ int writeFileV3(node_t linkList, int* numUsers)
                     linkList->user.account[j].accountValue,
                     linkList->user.account[j].availableFlag);
         }
-    
-        }
-    
-    
+    } 
     fclose(fp);
     return 1;
 }
@@ -763,7 +762,7 @@ int writeFileV3(node_t linkList, int* numUsers)
  * - int debugFlag : a pointer used to indicate whether the program is in
  *   debug mode or not.
  * outputs:
- * - node_t p : p is initialized with the data from the file
+ * - node_t p : p is initialized with the data from the file.
  * 
 *******************************************************************************/
 int readFile(node_t linkList, node_t p, int* numUsers)
@@ -776,7 +775,7 @@ int readFile(node_t linkList, node_t p, int* numUsers)
     {
         return 0;
     }
-    printf("maybe");
+    
     fscanf(fp, "%d ", numUsers);
     
     for(i=0; i<*numUsers; ++i)
