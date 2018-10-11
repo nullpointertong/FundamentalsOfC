@@ -23,17 +23,21 @@ int main(void) {
 
     node_t linkList;
     linkList = malloc( sizeof (node_t)); /*initialise the linkList*/
-    /*printf("enter shite >");
-    
-    scanf("%s", linkList->user.password);
-    
-    printf("%s", linkList->user.password);*/
     int *numUsers=0;
     numUsers = malloc( sizeof (int)*1); /*initialise numUsers*/
     node_t p;
     p=malloc( sizeof (node_t)*1);
     int debugFlag = 0;
-    printf("yes");
+    
+    FILE *fp
+    fp = fopen(DATABASE, "rb")    
+    if (fp== null){
+    }
+    else{
+        doDecompress();
+        fclose(fp);
+    }
+    fclose(fp);
     
     
     
@@ -192,7 +196,7 @@ char startMenu() {
  * - int debugFlag : a pointer used to indicate whether the program is in
  *   debug mode or not.
  * outputs:
- * - node_t p : updates p if a new user is created.
+ * - node_t p : updates p with the information of that user. 
 *******************************************************************************/
 node_t login(node_t linkList, node_t p, int debugFlag) {
     char userlogin[15];
@@ -247,8 +251,14 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
 
 
 
-
-
+/*******************************************************************************
+ * This function is used to dynamically expand the linkList to hold more data.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * outputs:
+ * - node_t p : Adds an other node to the linkedlist p.
+*******************************************************************************/
 node_t newNode(node_t linkList, node_t p)
 {
 
@@ -282,8 +292,20 @@ p = p->nextp;
 return p;
 
 }
-
-
+/*******************************************************************************
+ * This function lets the user create a new user. In so doing this function,
+ * creates a new node in p and updates p with the username and password for
+ * the new user.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * - int *numUsers : this variable is used to keep track of the number of users.
+ * outputs:
+ * - node_t p : updates p with the username and password of a new user.
+ * - int *newUsers : add one to newUsers to indicate a newUser was added.
+*******************************************************************************/
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     
     ++(*numUsers);
@@ -319,16 +341,20 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     return p;
 }
 
-
+/*******************************************************************************
+ * This function prints the menu the user sees once they login. It shows to the
+ * main function how to navigate to the rest of the programs functions.
+ * inputs:
+ * - NONE
+ * outputs:
+ * - NONE
+*******************************************************************************/
 
 char accountMenu() {
     char input;
     char garbage;
     garbage = getchar();
     if (garbage != '\0');
-    
-    
-    /*Please add number of users here*/
     
     /* printf("*********************************************************\n"
             "                              $$\n"
@@ -364,7 +390,17 @@ char accountMenu() {
    
     return input;
 }
-
+/*******************************************************************************
+ * This function lets the user add a new bank account. A user can have a max
+ * of 5 bank accounts.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : updates p with a new bank account.
+*******************************************************************************/
 int addNewAccount(node_t linkList, node_t p, int debugFlag) {
     /*char* currentID = userID;
     printf("Your user ID is %s", currentID);
@@ -428,6 +464,17 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
     return 0;
 }
 
+/*******************************************************************************
+ * This function lets the user Transfer funds between bank accounts.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : Updates p with the new information of the funds of the his/her 
+ *   bank account.
+*******************************************************************************/
 void TransferMoney(node_t p, node_t linkList, int debugFlag) {
     /*Transfer money from one account into another account*/
     char accountID1[10];
@@ -510,7 +557,13 @@ void TransferMoney(node_t p, node_t linkList, int debugFlag) {
     
 }
 
-
+/*******************************************************************************
+ * This function lets the user view his/her bank account ID and funds.
+ * inputs:
+ * - node_t p : The actual linkedlist used to store info.
+ * outputs:
+ * NONE
+*******************************************************************************/
 void listAccounts(node_t p) {
     int j;
     for (j = 0; j < 6; j++) {
@@ -521,22 +574,23 @@ void listAccounts(node_t p) {
         }
     }
 }
-
+/*******************************************************************************
+ * This function lets the user Withdraw funds of his/her bank accounts.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : Updates p with the new information of the funds of the his/her 
+ *   bank account.
+*******************************************************************************/
 void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
     
     char accountID1[15];
     double amount;
     int found = 0;
     
-    /*node_t i;
-    i = malloc(sizeof (node_t));
-    for (i = linkList; i != NULL; i = i->nextp) {
-        if (strcmp(i->user.userID, userid) == 0) {*/
-    
-    /* Mini Withdraw Menu, like in the Deposti function*/
-    
-    /* if(miniMenu("Withdraw Money", p, linkList) == '1')
-     {*/
     char garbage;
     garbage = getchar();
     if (garbage);
@@ -587,7 +641,17 @@ void withdrawMoney(node_t p, node_t linkList, int debugFlag) {
         
     }
 }
-
+/*******************************************************************************
+ * This function lets the user Desposit funds to his/her bank accounts.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : Updates p with the new information of the funds of the his/her 
+ *   bank account.
+*******************************************************************************/
 int depositMoney(node_t p, node_t linkList, int debugFlag) {
     
     char accountID1[15];
@@ -647,7 +711,16 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
                p->user.account[j].accountValue);
     return 0;
 }
-
+/*******************************************************************************
+ * This function writes the contents of p to a file so the information p can be
+ * stored in a databse so that the user can re-access his/her account when they
+ * login next time.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - int *numUsers : a pointer user to store the amount of users made.
+ * outputs:
+ * - NONE
+*******************************************************************************/
 int writeFileV3(node_t linkList, int* numUsers)
 {
     char * key = "@#$%*&()@#$%*&()";
@@ -682,7 +755,17 @@ int writeFileV3(node_t linkList, int* numUsers)
     fclose(fp);
     return 1;
 }
-
+/*******************************************************************************
+ * This function reads p from the database file.
+ * inputs:
+ * - node_t linkedList : head of our linkedlist used to store user info.
+ * - node_t p : The actual linkedlist used to store info.
+ * - int debugFlag : a pointer used to indicate whether the program is in
+ *   debug mode or not.
+ * outputs:
+ * - node_t p : p is initialized with the data from the file
+ * 
+*******************************************************************************/
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
     FILE* fp;
@@ -715,27 +798,6 @@ int readFile(node_t linkList, node_t p, int* numUsers)
         }
     }
     return 1;
-}
-void insert_hashmap(int *employeeId, map_t hashmap[], int *new_key) {
-    /*Please Note Hashmap is implmented in the form h(K) = KmodN where
-    N is number of elements in array and K is key*/
-    if (hashmap[*new_key].key == 0 && hashmap[*new_key].value == 0) {
-        hashmap[*new_key].value = *employeeId;
-        hashmap[*new_key].key = *new_key;
-    } else if (hashmap[*new_key].key != 0 && hashmap[*new_key].value != 0) {
-        /*Linear Collision */
-        
-        (*new_key)++;
-        return insert_hashmap(employeeId, hashmap, new_key);
-    }
-}
-
-void display_hashmap(int *employeeId, map_t hashmap[], int * new_key) {
-    int i;
-    printf("Value Key\n");
-    for (i = 0; i < 10; i++) {
-        printf("%d %d\n", hashmap[i].value, hashmap[i].key);
-    }
 }
 
 /* Encrypts using XOR bitwise Operation */
@@ -843,8 +905,8 @@ char *decoding(char str[])
 void doCompress()
 {
     char temp[100];
-    FILE *fp = fopen(DATABASE, "r");
-    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    FILE *fp = fopen(DATABASE, "rb");
+    FILE *fpWrite = fopen(DATABASETEMP, "wb");
     char *finished= malloc(sizeof(char)*1);
     char space[2];
     space[0] = ' ';
@@ -878,8 +940,8 @@ void doCompress()
 void doDecompress()
 {
     char temp[100];
-    FILE *fp = fopen(DATABASE, "r");
-    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    FILE *fp = fopen(DATABASE, "rb");
+    FILE *fpWrite = fopen(DATABASETEMP, "wb");
     char *finished=malloc(sizeof(char)*1);
     char space[2];
     space[0] = ' ';
