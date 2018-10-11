@@ -663,7 +663,7 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
     int found = 0; /* used to match when searching accounts*/
     
     
-           clean stdin to prevent overflow*/
+          /* clean stdin to prevent overflow*/
     char garbage;
     garbage = getchar();
     if (garbage);
