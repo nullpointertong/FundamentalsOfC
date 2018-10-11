@@ -43,9 +43,10 @@ int main(void) {
     p=malloc( sizeof (node_t)*1);
     int debugFlag = 0;
     
-    FILE *fp
-    fp = fopen(DATABASE, "rb")    
-    if (fp== null){
+    FILE *fp;
+    fp = fopen(DATABASE, "rb");    
+    if (fp == NULL){
+    
     }
     else{
         doDecompress();
@@ -902,7 +903,7 @@ char *decoding(char str[])
        
     }
 
-    final[strlen(decodedString)+1] = '\0';
+    decodedString[strlen(decodedString)+1] = '\0';
     
     return decodedString;
 }
