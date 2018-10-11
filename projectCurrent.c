@@ -159,19 +159,7 @@ char startMenu() {
     return input;
 }
 
-/* switch (input) {
-     case('1') : {
-         login(linkList);
-         break;
-     }
-     case('2') : {    fetch = <refspec>
-         newUser(linkList, numUsers);
-         break;
-     }
-     default : printf("Please enter a valid option");
- }
-}
- */
+
 node_t login(node_t linkList,node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
@@ -297,37 +285,7 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     return p;
 }
 
-/* Used as a submenu for functions like Transfer between accounts,
- * Deposit and withdraw. It is an easy and straight forward way to have
- * A submenu */
-char miniMenu(char name[], node_t p, node_t linkList) {
-    char garbage;
-    garbage = getchar();
-    if (garbage);
-    
-    
-    char input = '\0';
-    printf("1. %s\n", name);
-    printf("2. list Accounts\n"
-           "3. Return to Menu\n");
-    
-    printf("Option: ");
-    scanf("%c", &input);
-    if (input == '1') {
-        return input;
-    }
-    if (input == '2') {
-        listAccounts(p);
-        miniMenu(name, p, linkList);
-        
-    } else if (input == '3') {
-        accountMenu(p, linkList);
-    } else {
-        printf("%c", input);
-    }
-    return input;
-    
-}
+
 
 char accountMenu() {
     char input;
@@ -369,33 +327,7 @@ char accountMenu() {
     
     printf("Option: ");
     scanf("%c", &input);
-    /* switch (input) {
-         waiting till each function is finished to connect them.
-         case('1'): {addNewAccount(linkList, p);
-             break;}
-         case('2'): printf("DeleteAccount");
-             break;
-         case('3'): TransferMoney(p, linkList);
-             break;
-         case('4'): {listAccounts(p);
-             accountMenu(p, linkList);
-             break;}
-         case('5'): PayUser(p, linkList);
-             break;
-         case('6'): withdrawMoney(p, linkList);
-             break;
-         case('7'): depositMoney(p, linkList);
-             break;
-         case('0'): exit(0);
-         default: printf("Please enter an option 1-7 or quit with 0\n");*/
-    /*
-int i;
-map_t hashmap[10];
-for(i = 0 ;i<10 ; i++){
-hashmap[i].value = 0;
-hashmap[i].key = 0;
-}
-Replace .value with information you want*/
+   
     return input;
 }
 
@@ -544,53 +476,6 @@ void TransferMoney(node_t p, node_t linkList, int debugFlag) {
     
 }
 
-node_t PayUser(node_t p, node_t linkList) {
-    char id[15];
-    double amount;
-    char accountID1[10];
-    char accountID2[10];
-    
-    printf("What is the userid of the user you want to pay ?\n");
-    scanf("%s", id);
-    
-    printf("How much do you want to pay ?\n");
-    scanf("%lf", &amount);
-    
-    printf("What is the account number you want to pay ?\n");
-    scanf("%s", accountID2);
-    
-    printf("With which account do you want to pay?\n");
-    scanf("%s", accountID1);
-    /*gets info for transfer, */
-    
-    node_t i;
-    i = malloc(sizeof (node_t)); /*sets pointer for the unknown node*/
-    for (i = linkList; i != NULL; i = i->nextp) {
-        if (strcmp(i->nextp->user.userID, id) == 0) { /*finds unknown node using userID*/
-            int j;
-            for (j = 0; j < 6; j++) {
-                if (strcmp(i->user.account[j].accountID, accountID2) == 0) { /*locate account for user i*/
-                    i->user.account[j].accountValue = i->nextp->user.account[j].accountValue + amount; /*pay user i*/
-                    /* minus the original account!!*/
-                    for (j = 0; j < 6; j++) {
-                        if (strcmp(p->nextp->user.account[j].accountID, accountID1) == 0) /*locate account of user p*/ {
-                            p->nextp->user.account[j].accountValue = p->nextp->user.account[j].accountValue - amount; /*deduct cash for user p*/
-                        }
-                        
-                    }
-                    printf("Mr/Miss %s has been paid \n", id);
-                } else {
-                    printf("No account found with that account number \n");
-                }
-            }
-        } else {
-            printf("No user find with that id \n");
-        }
-        
-    }
-    free(i);
-    return p;
-}
 
 void listAccounts(node_t p) {
     int j;
