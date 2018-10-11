@@ -9,17 +9,6 @@
 #define DATABASETEMP "Database.tmp"
 
 int main(void) {
-    
-
-    FILE *fp = fopen(DATABASE, "r");
-    if(fp==NULL)
-    {
-    }
-    else
-    {
-        doDecompress();
-    }
-
 
     node_t linkList;
     linkList = malloc( sizeof (node_t)); /*initialise the linkList*/
@@ -94,15 +83,6 @@ int main(void) {
         }
     }
     
-
-    FILE *fpTemp = fopen(DATABASE, "r");
-
-    if(fpTemp!=NULL)
-    {
-        doCompress();
-    }
-    fclose(fpTemp);
-
     return 0;
     
 }
@@ -185,8 +165,6 @@ char startMenu() {
          break;
      }
      case('2') : {    fetch = <refspec>
-
-
          newUser(linkList, numUsers);
          break;
      }
@@ -198,7 +176,7 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
     int found=0;
-    
+    char * key = "@#$%*&()@#$%*&()";
     p=NULL;
     
     printf("user:::%s",linkList->nextp->user.username);
@@ -222,9 +200,9 @@ node_t login(node_t linkList,node_t p, int debugFlag) {
                    "current p->user.username =%s\n"
                    "current p->user.password =%s\n", p->user.username,
                    p->user.password_1);
-        if (strcmp(p->user.username, userlogin) == 0) {
+        if (strcmp(encrypt(p->user.username,key), userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(p->user.password_1, userpass) == 0) {
+            if (strcmp(encrypt(p->user.password_1,key), userpass) == 0) {
                 printf("Welcome, %s",p->user.username);
                 found = 1;
                 
@@ -753,7 +731,7 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 
 int writeFileV3(node_t linkList, int* numUsers)
 {
-	char * key = "we213@!";
+    char * key = "@#$%*&()@#$%*&()";
     int j;
     FILE* fp;
     fp = fopen("Database.txt", "w");
@@ -769,12 +747,12 @@ int writeFileV3(node_t linkList, int* numUsers)
         fprintf(fp, "%s %s %s %d ",
                 encrypt(linkList->user.username,key),
                 encrypt(linkList->user.password_1,key),
-                encrypt(linkList->user.userID,key),
+                linkList->user.userID,
                 linkList->user.numAccounts);
         for(j=0;j<linkList->user.numAccounts;++j)
         {
             fprintf(fp, "%s %lf %d ",
-                  encrypt(linkList->user.account[j].accountID,key),
+                  linkList->user.account[j].accountID,
                     linkList->user.account[j].accountValue,
                     linkList->user.account[j].availableFlag);
         }
@@ -788,7 +766,6 @@ int writeFileV3(node_t linkList, int* numUsers)
 
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
-	char * key = "we213@!";
     FILE* fp;
     int i, j;
     fp=fopen("Database.txt", "r");
@@ -805,15 +782,15 @@ int readFile(node_t linkList, node_t p, int* numUsers)
         p=newNode(linkList, p);
     
         fscanf(fp, "%s %s %s %d ",
-                encrypt(p->user.username,key),
-                encrypt(p->user.password_1,key),
-                encrypt(p->user.userID,key),
+                p->user.username,
+                p->user.password_1,
+                p->user.userID,
                 &p->user.numAccounts);
         printf("no");
         for(j=0; j<p->user.numAccounts;++j)
         {
             fscanf(fp, "%s %lf %d ",
-                    encrypt(p->user.account[j].accountID,key),
+                    p->user.account[j].accountID,
                     &p->user.account[j].accountValue,
                     &p->user.account[j].availableFlag);
         }
