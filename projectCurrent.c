@@ -49,10 +49,10 @@ int main(void) {
     
     }
     else{
-        doDecompress();
-        fclose(fp);
+        doCompress();
+        
     }
-    fclose(fp);
+  
     
     
     
