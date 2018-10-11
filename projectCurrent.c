@@ -1,10 +1,19 @@
 /*******************************************************************************
+ * 48430 Fundamentals of C Programming - Assignment 3
+ * Leader: Richard Tong
+ * Group Members: JiaJian
+ * Student ID: 13238528
+ * Date of submission: 7/09/2018
+ *
+*******************************************************************************/
+
+/*******************************************************************************
  * List header files:
 *******************************************************************************/
 #include "projectCurrentHeader.h"
-#include <stdio.h>
+#include <stdio.h> /*fopen,fclose,fgets,fprintf,printf,sprintf,fscanf,scanf */
 #include <stdlib.h> /*malloc,exit */
-#include <string.h>
+#include <string.h> /*strcmp,strcat,strlen,strcpy*/
 
 /*******************************************************************************
  * List preprocessing directives:
@@ -50,7 +59,6 @@ int main(void) {
     {
         printf("Error: Data was unable to load\n");
     }
-    
     
     p= userMenu(linkList, p, &debugFlag, numUsers); /*go to start menu and get user option*/
     
@@ -799,38 +807,57 @@ int readFile(node_t linkList, node_t p, int* numUsers)
     return 1;
 }
 
-/* Encrypts using XOR bitwise Operation */
+
+/*******************************************************************************
+ * This function encrypts the data collected from the user using the XOR bitwise
+ * operation.
+ * inputs:
+ * - char * encryptMessage : The message to encrypt.
+ * - char * key : The key used to do the encryption.
+ * outputs:
+ * - char * encrypted : Return the encrypted string back to the function that
+ *   called it.
+*******************************************************************************/
 char * encrypt(char * encryptMessage, char * key)
 {
     int messageLength = strlen(encryptMessage);
     int keyLength = strlen(key);
-    char * encryped = malloc(messageLength + 1);
+    char * encrypted = malloc(messageLength + 1);
     int i;
     for(i = 0 ; i<=messageLength; i++)
     {
-        if(&encryped[i] != NULL){
-            encryped[i] = encryptMessage[i] ^ key[i % keyLength];
+        if(&encrypted[i] != NULL){
+            encrypted[i] = encryptMessage[i] ^ key[i % keyLength];
         }
         else{
-            encryped[i] = '\0';
+            encrypted[i] = '\0';
         }
     }
-    return encryped;
+    return encrypted;
 }
 
-/*get a string then encoding with Run_Length_Encoding, return a string*/
+/*******************************************************************************
+ * This function does the encoding for the Run_Length_Encoding compression that
+ * we are using.
+ * inputs:
+ * - char str[] : String passed to the function to encode.
+ * outputs:
+ * - char *encodedString : Returns the encoded string back to the function that
+ *   called it. This string is used to compress the databse file.
+ * 
+*******************************************************************************/
 char *encoding(char str[])
 {
     int count;
     int strLength = strlen(str);
-    char *new = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *encodedString = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
     char finalCount[MAX];
 
     int i;
     int j=0;
     for(i=0; i<strLength; i++)
     {
-        new[j++] = str[i];/* init the first occureences of a char*/
+        encodedString[j++] = str[i];/* init the first occureences of a char*/
         count =1;/*init the count for each occureence*/
 
         /*if second char is equal to the previous char*/
@@ -842,23 +869,29 @@ char *encoding(char str[])
 
         sprintf(finalCount, "%d", count);
 
-       
         int k;
         for(k=0;*(finalCount+k); k++, j++)
         {
-            new[j] = finalCount[k]; /*coping each encoded char to new string */
+            encodedString[j] = finalCount[k]; /*coping each encoded char to new string */
         }
-
     }
-
-    return new;
+    return encodedString;
 }
 
-/*get a string then decoding with Run_Length_Encoding, return a string*/
+/*******************************************************************************
+ * This function does the decoding for the Run_Length_Encoding compression that
+ * we are using.
+ * inputs:
+ * - char str[] : String passed to the function to encode.
+ * outputs:
+ * - char *decodedString : Returns the encoded string back to the function that
+ *   called it. This string is used to compress the databse file.
+ * 
+*******************************************************************************/
 char *decoding(char str[])
 {
    char temp[MAX];
-   char* final = malloc(MAX);
+   char* decodedString = malloc(MAX);
    char* tempCurrentChar =malloc(sizeof(char)*1);
    int initdone = 0;
    
@@ -885,22 +918,29 @@ char *decoding(char str[])
         so strcpy is necessary for this situation*/
         if(initdone == 1)
         {
-         strcat(final, temp);
+         strcat(decodedString, temp);
         }
         else
         {
-         strcpy(final, temp);
+         strcpy(decodedString, temp);
          initdone =1;
         }
        
     }
 
-    final[strlen(final)+1] = '\0';
+    final[strlen(decodedString)+1] = '\0';
     
-    return final;
+    return decodedString;
 }
 
-/*Compress  database*/
+/*******************************************************************************
+ * This function uses Run_Length_Encoding to compress the database.
+ * inputs:
+ * NONE
+ * outputs:
+ * NONE
+ * 
+*******************************************************************************/
 void doCompress()
 {
     char temp[100];
@@ -935,7 +975,15 @@ void doCompress()
     }
 }
 
-/*Decompress  database*/
+
+/*******************************************************************************
+ * This function uses Run_Length_Encoding to decompress the database.
+ * inputs:
+ * NONE
+ * outputs:
+ * NONE
+ * 
+*******************************************************************************/
 void doDecompress()
 {
     char temp[100];
