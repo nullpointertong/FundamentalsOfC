@@ -3,23 +3,30 @@
 #include<stdlib.h> 
 
 #define MAX 256
-#define DATABASE "Database.txt"
+#define DATABASE "List.txt"
 #define DATABASETEMP "Database.tmp"
 
 char *encoding(char str[])
 {
     int count;
     int strLength = strlen(str);
-    char *new = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *encodedString = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
     char finalCount[MAX];
+    char *number9 = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *formatedString = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *formatedStringRemain =  (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    int done = 0;
+    char* numberRemain = (char *)malloc(sizeof(char)*(strLength*2 + 1));
+    int remainInt = 0;
 
     int i;
     int j=0;
     for(i=0; i<strLength; i++)
     {
-        new[j++] = str[i];/* init the first occureences of a char*/
-        count =1;
+        encodedString[j++] = str[i];/* init the first occureences of a char*/
+        count =1;/*init the count for each occureence*/
 
+        /*if second char is equal to the previous char*/
         while(str[i] == str[i+1] && i+1<strLength)
         {
             count++;
@@ -28,16 +35,50 @@ char *encoding(char str[])
 
         sprintf(finalCount, "%d", count);
 
-       
+        if(count>9)
+        {
+            int timeInt = count / 9;
+
+            remainInt = count % 9;
+            sprintf(numberRemain, "%d", remainInt);
+           
+            sprintf(number9, "%d", 9);
+            sprintf(formatedString, "%c", str[i]);
+            strcat(formatedString, number9);
+            printf("\nformatedString is %s\n", formatedString);
+             
+            int l;
+            for(l=0; l<timeInt; l++)
+            {
+                if (done==0)
+                {
+                    encodedString[j--] = '\0';
+                    strcpy(finalCount, formatedString);
+                    done=1;
+                                printf("done0 finalCount is %s\n", finalCount);
+                }
+                else
+                    strcat(finalCount, formatedString);
+                    printf("done1 finalCount is %s", finalCount);
+            }
+            
+            if(remainInt != 0 )
+            {
+                sprintf(formatedStringRemain, "%c", str[i]);
+                sprintf(numberRemain, "%d", remainInt);
+                strcat(formatedStringRemain, numberRemain);
+                strcat(finalCount,formatedStringRemain);
+            }
+
+        }
+
         int k;
         for(k=0;*(finalCount+k); k++, j++)
         {
-            new[j] = finalCount[k];
+            encodedString[j] = finalCount[k]; /*coping each encoded char to new string */
         }
-
     }
-
-    return new;
+    return encodedString;
 }
 char *decoding(char str[])
 {
@@ -72,13 +113,10 @@ char *decoding(char str[])
          strcpy(final, temp);
          initdone =1;
         }
-        
-        printf("\nfinal keep tracking: \n%s\n", final);
     }
 
     final[strlen(final)+1] = '\0';
-    
-    printf("final in final: \n%s\n", final);
+   
     
     return final;
 }
@@ -165,20 +203,49 @@ void showDatabase()
 }
 
 
+char * encrypt(char * encryptMessage, char * key)
+{
+    int messageLength = strlen(encryptMessage);
+    int keyLength = strlen(key);
+    char * encrypted = malloc(messageLength + 1);
+    int i;
+    for(i = 0 ; i<=messageLength; i++)
+    {
+        if(&encrypted[i] != NULL){
+            encrypted[i] = encryptMessage[i] ^ key[i % keyLength];
+        }
+        else{
+            encrypted[i] = '\0';
+        }
+    }
+    return encrypted;
+}
+
 int main()
 {
-    printf("\nDatabase before do compression\n");
-    showDatabase();
+    int true=1;
+    while(true)
+    {
+    printf("\n");
+     char* temp =malloc(sizeof(char)*1);
+    scanf("%s", temp);
 
-    doCompress();
-    printf("\nDatabase after do compression\n");
-    showDatabase();
-   
+    char* key = "@#$%*&()@#$%*&()";
+    char* encrypted = encrypt(temp, key);
 
-    doDecompress();
-    printf("\nDatabase after do decompression\n");
-    showDatabase();
+    printf("\n%s\n", temp);
+    printf("encrypt is %s\n", encrypted);
 
-    return 0;
+    char* compress = encoding(encrypted);
+    char* decompress = decoding(compress);
 
-}
+    if(strcmp(encrypted, decompress) == 0)
+    {
+        printf("Successful!!!\n");
+    }
+
+
+
+    }
+       return 0;
+       }

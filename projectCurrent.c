@@ -21,6 +21,7 @@
 #define MAX 256
 #define DATABASE "Database.txt"
 #define DATABASETEMP "Database.tmp"
+#define COUNTDATABASE "CountDatabase.txt"
 
 /*******************************************************************************
  * Main:
@@ -43,17 +44,16 @@ int main(void) {
     p=malloc( sizeof (node_t)*1);
     int debugFlag = 0;
     
-    FILE *fp;
-    fp = fopen(DATABASE, "rb");    
+    /*FILE *fp = fopen(DATABASE, "r");    
     if (fp == NULL){
     
     }
     else{
-        doCompress();
-        
-    }
-  
-    
+        doDecryption();
+        doDecompress();
+        fclose(fp);
+    }*/
+ 
     
     
     if(readFile(linkList, p, numUsers)==0)
@@ -96,10 +96,21 @@ int main(void) {
                 break;
             case ('0'):
             {
-                
-                    if(writeFileV3(linkList, numUsers)==0)
-                        printf("write failure");
-                
+                if(writeFileV3(linkList, numUsers)==0)
+                {
+                    printf("write failure");
+                }
+
+                /*FILE *fpTemp = fopen(DATABASE, "r");    
+                if (fpTemp == NULL)
+                {
+                }
+                else
+                {
+                doCompress();
+                doEncryption();
+                fclose(fpTemp);
+                }*/
                 exit(0);
             }
             default:
@@ -107,8 +118,7 @@ int main(void) {
                 printf("Please enter an option 1-6 or quit with 0\n");
                 if (debugFlag == 1)
                     printf("\n\nDEBUG: input =%c\n", input); /*debug*/
-            }
-            
+            }   
         }
     }
     
@@ -145,7 +155,7 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers) {
         
         switch (input) {
             case ('1') : {
-                printf("user:::%s",linkList->nextp->user.username);
+                printf("user is %s ",linkList->nextp->user.username);
                 p=login(linkList, p,  *debugFlag);
                 if (*debugFlag == 1) /*debug*/
                     printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
@@ -193,10 +203,9 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
     char userlogin[15];
     char userpass[15];
     int found=0;
-    char * key = "@#$%*&()@#$%*&()";
     p=NULL;
     
-    printf("user:::%s",linkList->nextp->user.username);
+    printf("user is %s ",linkList->nextp->user.username);
     /* ask for username and password*/
     printf("Username: ");
     scanf("%s", userlogin);
@@ -217,9 +226,9 @@ node_t login(node_t linkList, node_t p, int debugFlag) {
                    "current p->user.username =%s\n"
                    "current p->user.password =%s\n", p->user.username,
                    p->user.password_1);
-        if (strcmp(encrypt(p->user.username,key), userlogin) == 0) {
+        if (strcmp(p->user.username, userlogin) == 0) {
             /* compare passwords to password entered*/
-            if (strcmp(encrypt(p->user.password_1,key), userpass) == 0) {
+            if (strcmp(p->user.password_1, userpass) == 0) {
                 printf("Welcome, %s",p->user.username);
                 found = 1;
                 
@@ -292,7 +301,6 @@ node_t newNode(node_t linkList, node_t p)
 node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     
     ++(*numUsers);
-    
    p=newNode(linkList,p);
     /*dynamically sets their size*/
     sprintf(p->user.userID, "%d", *numUsers);
@@ -305,6 +313,7 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag) {
     scanf("%s", p->user.username);
     printf("Enter Your Password> \n");
     scanf("%s", p->user.password_1);
+
     printf("Welcome to Richard and Co Bank!!\n");
     if (debugFlag == 1) /*debug*/
         printf("\nDEBUG: \n"
@@ -418,7 +427,7 @@ int addNewAccount(node_t linkList, node_t p, int debugFlag) {
             char newAccountID[10];
             int currentNum = p->user.numAccounts;
             
-            sprintf(newAccountID, "%d%d", p->user.numAccounts, currentNum);
+            sprintf(newAccountID, "%s%d", p->user.userID, currentNum);
             /*creates newAccountID= username+numaccounts*/
             if (debugFlag == 1) /*debug*/
                 printf("\nDEBUG: newAccountID= %s\n", newAccountID);
@@ -708,35 +717,41 @@ int depositMoney(node_t p, node_t linkList, int debugFlag) {
 *******************************************************************************/
 int writeFileV3(node_t linkList, int* numUsers)
 {
-    char * key = "@#$%*&()@#$%*&()";
-    int j;
+
     FILE* fp;
-    fp = fopen("Database.txt", "w");
-    if(fp==NULL)
+    fp = fopen(DATABASE, "w");
+
+    FILE* fpCount;
+    fpCount = fopen(COUNTDATABASE, "w");
+
+    if(fp==NULL || fpCount == NULL)
         return 0;
-    fprintf(fp, "%d ", *numUsers);
-    /*Dyanmic Key Generation was considered however
-    was left out due to the ram and storage restrictions
-    */ 
-    
-    for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
+    else if(fp!=NULL && fpCount != NULL)
     {
-        fprintf(fp, "%s %s %s %d ",
-                encrypt(linkList->user.username,key),
-                encrypt(linkList->user.password_1,key),
+        int j;
+        fprintf(fpCount, "%d", *numUsers);
+        for(linkList=linkList->nextp; linkList!=NULL;linkList=linkList->nextp)
+        {
+            fprintf(fp, "%s %s %s %d ",
+                linkList->user.username,
+                linkList->user.password_1,
                 linkList->user.userID,
                 linkList->user.numAccounts);
-        for(j=0;j<linkList->user.numAccounts;++j)
-        {
-            fprintf(fp, "%s %lf %d ",
-                  linkList->user.account[j].accountID,
+            for(j=0;j<linkList->user.numAccounts;++j)
+            {
+                fprintf(fp, "%s %lf %d ",
+                    linkList->user.account[j].accountID,
                     linkList->user.account[j].accountValue,
                     linkList->user.account[j].availableFlag);
-        }
-    } 
+            }
+         }
     fclose(fp);
+    fclose(fpCount);
     return 1;
+    } 
+    return 0;
 }
+
 /*******************************************************************************
  * This function reads p from the database file.
  * inputs:
@@ -751,37 +766,53 @@ int writeFileV3(node_t linkList, int* numUsers)
 int readFile(node_t linkList, node_t p, int* numUsers)
 {
     FILE* fp;
-    int i, j;
-    fp=fopen("Database.txt", "r");
+    FILE* fpCount;
+    fp=fopen(DATABASE, "r");
+    fpCount = fopen(COUNTDATABASE, "r");
     
-    if(fp==NULL)
+    if(fp==NULL || fpCount == NULL)
     {
         return 0;
     }
-    
-    fscanf(fp, "%d ", numUsers);
-    
-    for(i=0; i<*numUsers; ++i)
+    else if(fp != NULL && fpCount != NULL)
     {
-        p=newNode(linkList, p);
+        int i, j;
+        fscanf(fpCount, "%d", numUsers);
     
-        fscanf(fp, "%s %s %s %d ",
+        for(i=0; i<*numUsers; ++i)
+        {
+            p=newNode(linkList, p);
+    
+            fscanf(fp, "%s %s %s %d ",
                 p->user.username,
                 p->user.password_1,
                 p->user.userID,
                 &p->user.numAccounts);
-        printf("no");
-        for(j=0; j<p->user.numAccounts;++j)
-        {
-            fscanf(fp, "%s %lf %d ",
+
+            printf("\n %s %s %s %d ", p->user.username,
+                p->user.password_1,
+                p->user.userID,
+                p->user.numAccounts);
+                
+            for(j=0; j<p->user.numAccounts;++j)
+            {
+                fscanf(fp, "%s %lf %d ",
                     p->user.account[j].accountID,
                     &p->user.account[j].accountValue,
                     &p->user.account[j].availableFlag);
-        }
-    }
-    return 1;
-}
 
+                printf("%s %lf %d \n", 
+                    p->user.account[j].accountID,
+                    p->user.account[j].accountValue,
+                    p->user.account[j].availableFlag);
+            }
+        }
+        fclose(fp);
+        fclose(fpCount);
+        return 1;
+    }
+    return 0;
+}
 
 /*******************************************************************************
  * This function encrypts the data collected from the user using the XOR bitwise
@@ -793,8 +824,9 @@ int readFile(node_t linkList, node_t p, int* numUsers)
  * - char * encrypted : Return the encrypted string back to the function that
  *   called it.
 *******************************************************************************/
-char * encrypt(char * encryptMessage, char * key)
+char * encrypt(char * encryptMessage)
 {
+    char * key = "@#$%*&()@#$%*&()";
     int messageLength = strlen(encryptMessage);
     int keyLength = strlen(key);
     char * encrypted = malloc(messageLength + 1);
@@ -810,6 +842,83 @@ char * encrypt(char * encryptMessage, char * key)
     }
     return encrypted;
 }
+
+/*YYYYYYYYYYYYYYYYYYYYYY*/
+char* decrypt(char * decryptMessage)
+{
+        char * key = "@#$%*&()@#$%*&()";
+        int messageLength = strlen(decryptMessage);
+        int keyLength = strlen(key);
+        char * originalMessage = malloc(messageLength+1);
+        int i;
+        for(i=0; i<=messageLength; i++)
+        {
+            if(&originalMessage[i]!=NULL)
+                originalMessage[i] = decryptMessage[i] ^ key[i% keyLength];
+            else
+                originalMessage[i] = '\0';
+        }
+        return originalMessage;
+}
+
+/*YYYYYYYYYYYYYYYYYYYYYY*/
+void doEncryption()
+{
+    FILE *fp = fopen(DATABASE, "w");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+
+    char* temp = malloc(sizeof(char)*1);
+    char* encrypted = malloc(sizeof(char)*1);
+
+    if(fp == NULL)
+    {
+        printf("Cannot find database, please have a check");
+    }
+    else
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp, "%s ", temp);
+            encrypted = encrypt(temp);
+            fprintf(fpWrite, "%s ", encrypted);
+        }
+        fclose(fp);
+        fclose(fpWrite);
+
+        remove(DATABASE);
+        rename(DATABASETEMP, DATABASE);
+    }
+}
+
+void doDecryption()
+{
+    FILE *fp = fopen(DATABASE, "w");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    char* temp = malloc(sizeof(char)*1);
+    char* original = malloc(sizeof(char)*1);
+
+    if(fp == NULL)
+    {
+        printf("Cannot find database, please have a check");
+    }
+    else
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp, "%s ", temp);
+            original = decrypt(temp);
+            fprintf(fpWrite, "%s", original);
+        }
+        fclose(fp);
+        fclose(fpWrite);
+
+        remove(DATABASE);
+        rename(DATABASETEMP, DATABASE);
+    }
+}
+
+
+
 
 /*******************************************************************************
  * This function does the encoding for the Run_Length_Encoding compression that
@@ -827,6 +936,12 @@ char *encoding(char str[])
     int strLength = strlen(str);
     char *encodedString = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
     char finalCount[MAX];
+    char *number9 = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *formatedString = (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    char *formatedStringRemain =  (char *)malloc(sizeof(char)*(strLength*2 + 1)); 
+    int done = 0;
+    char* numberRemain = (char *)malloc(sizeof(char)*(strLength*2 + 1));
+    int remainInt = 0;
 
     int i;
     int j=0;
@@ -843,6 +958,43 @@ char *encoding(char str[])
         }
 
         sprintf(finalCount, "%d", count);
+
+        if(count>9)
+        {
+            int timeInt = count / 9;
+
+            remainInt = count % 9;
+            sprintf(numberRemain, "%d", remainInt);
+           
+            sprintf(number9, "%d", 9);
+            sprintf(formatedString, "%c", str[i]);
+            strcat(formatedString, number9);
+            printf("\nformatedString is %s\n", formatedString);
+             
+            int l;
+            for(l=0; l<timeInt; l++)
+            {
+                if (done==0)
+                {
+                    encodedString[j--] = '\0';
+                    strcpy(finalCount, formatedString);
+                    done=1;
+                                printf("done0 finalCount is %s\n", finalCount);
+                }
+                else
+                    strcat(finalCount, formatedString);
+                    printf("done1 finalCount is %s", finalCount);
+            }
+            
+            if(remainInt != 0 )
+            {
+                sprintf(formatedStringRemain, "%c", str[i]);
+                sprintf(numberRemain, "%d", remainInt);
+                strcat(formatedStringRemain, numberRemain);
+                strcat(finalCount,formatedStringRemain);
+            }
+
+        }
 
         int k;
         for(k=0;*(finalCount+k); k++, j++)
@@ -919,8 +1071,8 @@ char *decoding(char str[])
 void doCompress()
 {
     char temp[100];
-    FILE *fp = fopen(DATABASE, "rb");
-    FILE *fpWrite = fopen(DATABASETEMP, "wb");
+    FILE *fp = fopen(DATABASE, "r");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
     char *finished= malloc(sizeof(char)*1);
     char space[2];
     space[0] = ' ';
@@ -962,8 +1114,8 @@ void doCompress()
 void doDecompress()
 {
     char temp[100];
-    FILE *fp = fopen(DATABASE, "rb");
-    FILE *fpWrite = fopen(DATABASETEMP, "wb");
+    FILE *fp = fopen(DATABASE, "r");
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
     char *finished=malloc(sizeof(char)*1);
     char space[2];
     space[0] = ' ';
@@ -978,11 +1130,11 @@ void doDecompress()
             fputs(finished, fpWrite);
             fputs(space, fpWrite); /*space is needed here for meeting the databse*/
         }
-    fclose(fp);
-    fclose(fpWrite);
+        fclose(fp);
+        fclose(fpWrite);
 
-    remove(DATABASE);
-    rename(DATABASETEMP, DATABASE);
+        remove(DATABASE);
+        rename(DATABASETEMP, DATABASE);
     }
     else
     {
