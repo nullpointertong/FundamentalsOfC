@@ -10,6 +10,23 @@ char* upperToLower(char* process);
 
 char * encrypt(char * encryptMessage)
 {
+    char* key = "@#$%*&()@#$%*&()";
+    int messageLength = strlen(encryptMessage);
+    int keyLength = strlen(key);
+    char * encrypted = malloc(messageLength + 1);
+    int i;
+    for(i = 0 ; i<=messageLength; i++)
+    {
+        if(&encrypted[i] != NULL){
+            encrypted[i] = encryptMessage[i] ^ key[i % keyLength];
+        }
+        else{
+            encrypted[i] = '\0';
+        }
+    }
+    return encrypted;
+}
+
 void doEncryption()
 {
     char* temp=malloc(sizeof(char)*10);
