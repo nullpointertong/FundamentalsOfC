@@ -39,23 +39,23 @@ typedef struct map map_t;
 /****************************************/
 
 /**************Prototypes*************************/
-node_t login(node_t linkList, node_t p, int debugFlag);
+node_t login(node_t linkList, node_t p, int debugFlag, int *compressFlag, int *encryptFlag);
 char accountMenu();
 int addNewAccount(node_t linkList, node_t p, int debugFlag);
 void TransferMoney(node_t p, node_t linkList, int debugFlag);
 void withdrawMoney(node_t p, node_t linkList, int debugFlag);
 int depositMoney(node_t p, node_t linkList, int debugFlag);
 node_t newNode(node_t linkList, node_t p);
-node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag);
+node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag, int *encryptFlag);
 int writeFile(node_t p, int* numUsers);
-node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers);
+node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers, int *compressFlag, int *encryptFlag);
 void listAccounts(node_t p);
 
 void insert_hashmap(int *employeeId, map_t hashmap[], int * new_key);
 void display_hashmap(int *employeeId, map_t hashmap[], int * new_key);
-int writeFileV3(node_t linkList, int* numUsers);
-int readFile(node_t linkList, node_t p, int* numUsers);
-char * encrypt(char * encryptMessage);
+int writeFileV3(node_t linkList, int* numUsers, int *encryptFlag);
+int readFile(node_t linkList, node_t p, int* numUsers, int* encryptFlag);
+char * encrypt(char * encryptMessage, char * key);
 char * decrypt(char * decryptMessage);
 
 char *encoding(char str[]);
