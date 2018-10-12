@@ -27,16 +27,22 @@ int main(void) {
     *encryptFlag = 2;
     int *compressFlag;
     compressFlag = malloc(sizeof(int)*1);
-    printf("yes");
+    
+    FILE *fp = fopen(DATABASE, "r");    
+    if (fp == NULL){
+       printf("Database file empty: No such login exists");
+       miniMenu(linkList, p ,&debugFlag, numUsers, compressFlag, encryptFlag);
+    }
     
     
     if(readFile(linkList, p, numUsers, encryptFlag)==0)
     {
         printf("Error: Data was unable to load\n");
-    }
-    
-    
+        userMenu(linkList, p, &debugFlag, numUsers, compressFlag, encryptFlag);
+        
+    }else{
     p= userMenu(linkList, p, &debugFlag, numUsers, compressFlag, encryptFlag); /*go to start menu and get user option*/
+    }
     
     /*will loop until a valid input is added*/
     char input = 'a';
@@ -48,7 +54,11 @@ int main(void) {
             /*waiting till each function is finished to connect them.*/
             case ('1'):
             {
+            if(*numUsers == 0){
+                printf("Database file empty: No such login exists");
+                }else{
                 p=userMenu(linkList, p ,&debugFlag, numUsers, compressFlag, encryptFlag);
+                }
                 break;
             }
             case ('2'):
@@ -103,13 +113,18 @@ node_t userMenu(node_t linkList, node_t p, int *debugFlag, int *numUsers, int *c
         printf("Option: ");
         scanf(" %c", &input);
         
-        
         switch (input) {
             case ('1') : {
                 printf("user:::%s",linkList->nextp->user.username);
+                printf("%d", *numUsers);
+                if(*numUsers == 0){
+                printf("Database file empty!");
+                }else{
                 p=login(linkList, p,  *debugFlag, compressFlag, encryptFlag);
                 if (*debugFlag == 1) /*debug*/
                     printf("\nDEBUG: \np->user.username= %s \np->user.password_1= %s \n", p->user.username, p->user.password_1);
+                    }
+                
                 break;
             }
             case ('2') : {
@@ -162,6 +177,12 @@ char startMenu() {
     
     switch(input){
         case('1') : {
+        FILE *fp = fopen(DATABASE, "r");    
+        if (fp == NULL){
+       printf("Database file empty: No such login exists");
+       input = '2';
+       return input;
+    }else
             return input;
             break;
         }
@@ -196,6 +217,7 @@ node_t login(node_t linkList,node_t p, int debugFlag, int *compressFlag, int *en
     
     FILE *fp = fopen(DATABASE, "r");    
     if (fp == NULL){
+       printf("Database file empty: No such login exists");
     }
     if(*compressFlag == 1){
      doDecompress();
@@ -326,30 +348,33 @@ node_t newUser(node_t linkList, int *numUsers, node_t p, int debugFlag, int *enc
 /* Used as a submenu for functions like Transfer between accounts,
  * Deposit and withdraw. It is an easy and straight forward way to have
  * A submenu */
-char miniMenu(char name[], node_t p, node_t linkList) {
+char miniMenu(node_t linkList, node_t p ,int &debugFlag,int numUsers, int compressFlag,int encryptFlag) {
     char garbage;
     garbage = getchar();
     if (garbage);
     
     
     char input = '\0';
-    printf("1. %s\n", name);
-    printf("2. list Accounts\n"
-           "3. Return to Menu\n");
+    printf("1. Create Account\n"
+           "2. Exit\n");
     
     printf("Option: ");
     scanf("%c", &input);
-    if (input == '1') {
-        return input;
-    }
-    if (input == '2') {
-        listAccounts(p);
-        miniMenu(name, p, linkList);
+    switch(input){
+    
+        case('1') : {
         
-    } else if (input == '3') {
-        accountMenu(p, linkList);
-    } else {
-        printf("%c", input);
+       printf("Database file empty: No such login exists");
+       input = '2';
+       return input;
+       break;
+    }
+        }
+        case('2') : {
+            return input;
+            break;
+        }
+            printf("Please enter a valid option\n");
     }
     return input;
     
@@ -818,9 +843,10 @@ int readFile(node_t linkList, node_t p, int* numUsers, int *encryptFlag)
     
     if(fp==NULL)
     {
-        return 0;
+       printf("Database file empty: No such login exists");
+       return 0;
     }
-    printf("maybe");
+    
     fscanf(fp, "%d ", numUsers);
     
     for(i=0; i<*numUsers; ++i)
