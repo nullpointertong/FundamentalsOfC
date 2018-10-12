@@ -2,9 +2,112 @@
 #include<string.h> 
 #include<stdlib.h> 
 
-#define MAX 256
-#define DATABASE "List.txt"
+#define MAX 1000
+#define DATABASE "Database.txt"
 #define DATABASETEMP "Database.tmp"
+
+char* upperToLower(char* process);
+
+char * encrypt(char * encryptMessage)
+{
+void doEncryption()
+{
+    char* temp=malloc(sizeof(char)*10);
+    FILE *fp = fopen(DATABASE, "r");
+    char* finished =malloc(sizeof(char)*10);
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    printf("\n");
+    if(fp!=NULL)
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp," %s ",temp);
+				strcpy(finished, upperToLower(temp));
+            strcpy(finished, encrypt(finished));
+            fprintf(fpWrite, " %s ", finished);
+
+            temp[0] = '\0';
+            finished[0] = '\0';            
+            
+        }
+	fclose(fp);
+    fclose(fpWrite);
+
+    remove(DATABASE);
+    rename(DATABASETEMP, DATABASE);
+    }
+    else
+    {
+        printf("Cannot find database, please have a check\n");
+    }
+}
+
+
+void doDecryption()
+{
+    char* temp=malloc(sizeof(char)*10);
+    FILE *fp = fopen(DATABASE, "r");
+    char* finished =malloc(sizeof(char)*10);
+    FILE *fpWrite = fopen(DATABASETEMP, "w");
+    printf("\n");
+    if(fp!=NULL)
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp," %s ",temp);
+
+            strcpy(finished, encrypt(temp));
+            fprintf(fpWrite, "%s ", finished);
+            temp[0] = '\0';
+            finished[0] = '\0';
+        }
+            fclose(fp);
+    			fclose(fpWrite);
+
+    			remove(DATABASE);
+    			rename(DATABASETEMP, DATABASE);
+    }
+    else
+    {
+        printf("Cannot find database, please have a check\n");
+    }
+}
+
+void showDatabase()
+{
+    char* temp=malloc(sizeof(char)*10);
+    FILE *fp = fopen (DATABASE, "r");
+    if(fp!=NULL)
+    {
+        while(!feof(fp))
+        {
+            fscanf(fp, " %s ", temp);
+           	printf(" %s ", temp);
+           	temp[0]='\0';
+        }
+    }
+    fclose(fp); 
+}
+
+int lower(int a) 
+{
+    if ((a >= 0x41) && (a <= 0x5A))
+        a |= 0x20; 
+    return a;  
+}
+
+char* upperToLower(char* process)
+{
+	char* temp=malloc(sizeof(process)+1);
+	int i;
+	for(i=0; i<strlen(process);i++)
+	{
+		temp[i] = lower(process[i]);
+	}
+	temp[strlen(process)+1] = '\0';
+	
+	return temp;
+}
 
 char *encoding(char str[])
 {
@@ -187,65 +290,36 @@ void doDecompress()
     }
 }
 
-void showDatabase()
+void init()
 {
-    char temp[100];
-    FILE *fp = fopen (DATABASE, "r");
-    if(fp!=NULL)
-    {
-        while(!feof(fp))
-        {
-        fgets(temp, MAX, fp);
-            printf("%s", temp);
-           
-        }
-    }
+	doDecompress();
+   doDecryption();
 }
 
-
-char * encrypt(char * encryptMessage, char * key)
+void terminate()
 {
-    int messageLength = strlen(encryptMessage);
-    int keyLength = strlen(key);
-    char * encrypted = malloc(messageLength + 1);
-    int i;
-    for(i = 0 ; i<=messageLength; i++)
-    {
-        if(&encrypted[i] != NULL){
-            encrypted[i] = encryptMessage[i] ^ key[i % keyLength];
-        }
-        else{
-            encrypted[i] = '\0';
-        }
-    }
-    return encrypted;
+	doEncryption();
+	doCompress();
 }
 
 int main()
 {
-    int true=1;
-    while(true)
-    {
-    printf("\n");
-     char* temp =malloc(sizeof(char)*1);
-    scanf("%s", temp);
+    printf("Database before do encryption and compression\n");
+    showDatabase();
+    
 
-    char* key = "@#$%*&()@#$%*&()";
-    char* encrypted = encrypt(temp, key);
+  	terminate();
+    printf("\nDatabase after do encryption and compression\n");
+    showDatabase();
 
-    printf("\n%s\n", temp);
-    printf("encrypt is %s\n", encrypted);
+	
 
-    char* compress = encoding(encrypted);
-    char* decompress = decoding(compress);
+	init();
+    printf("\nDatabase after do decryption and decompression\n");
+    showDatabase();
+     
+     printf("\n");
 
-    if(strcmp(encrypted, decompress) == 0)
-    {
-        printf("Successful!!!\n");
-    }
+    return 0;
 
-
-
-    }
-       return 0;
-       }
+}
